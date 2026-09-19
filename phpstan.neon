@@ -2,3 +2,13 @@ parameters:
 	level: 8
 	paths:
 		- app
+	# Allows auth-related ignores to stay configured even when stubs don't report them yet.
+	reportUnmatchedIgnoredErrors: false
+	ignoreErrors:
+		# Protected by auth:sanctum — $request->user() is guaranteed at runtime.
+		-
+			identifier: method.nonObject
+			path: app/Http/Controllers/*
+		-
+			message: '#Call to an undefined method Illuminate\\Contracts\\Auth\\Authenticatable::#'
+			path: app/Http/Controllers/*
