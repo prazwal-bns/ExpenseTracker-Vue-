@@ -1,0 +1,6 @@
+pre-commit:
+  parallel: true
+  commands:
+    phpstan:
+      glob: "*.php"
+      run: vendor/bin/phpstan analyse --memory-limit=1G
