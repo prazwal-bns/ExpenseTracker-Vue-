@@ -14,6 +14,17 @@ class CategoryResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+            'id' => $this->id,
+            'user_id' => $this->user_id,
+            'name' => $this->name,
+            'color' => $this->color,
+            'description' => $this->description,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
+            'user' => UserResource::make($this->whenLoaded('user')),
+            'expenses' => ExpenseResource::collection($this->whenLoaded('expenses')),
+            'expenses_count' => $this->whenCounted('expenses'),
+        ];
     }
 }
