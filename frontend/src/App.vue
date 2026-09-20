@@ -1,7 +1,7 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
+import ExpenseCategories from './components/ExpenseCategories.vue'
 </script>
 
 <template>
-  <HelloWorld />
+  <ExpenseCategories />
 </template>
