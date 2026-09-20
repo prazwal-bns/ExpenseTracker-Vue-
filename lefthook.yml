@@ -3,7 +3,7 @@ pre-commit:
   commands:
     phpstan:
       glob: "*.php"
-      run: vendor/bin/phpstan analyse --memory-limit=1G
+      run: vendor/bin/phpstan analyse --memory-limit=4G
     eslint:
       glob: "frontend/src/**/*.{js,vue}"
-      run: npm run lint
+      run: npm run lint {all_files}
