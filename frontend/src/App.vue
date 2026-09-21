@@ -1,7 +1,7 @@
 <script setup>
-import ExpenseCategories from './components/ExpenseCategories.vue'
+import { RouterView } from 'vue-router'
 </script>
 
 <template>
-  <ExpenseCategories />
+  <RouterView />
 </template>
