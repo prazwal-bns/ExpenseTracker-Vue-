@@ -11,7 +11,6 @@ const error = ref('')
 const loading = ref(false)
 
 async function handleLogin() {
-  console.log(email.value, password.value)
   loading.value = true
   error.value = ''
 
