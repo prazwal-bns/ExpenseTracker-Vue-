@@ -1,12 +1,20 @@
 <script setup>
 import { onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { logout } from '../api/auth'
 
 const expenseCategories = ref([])
-
+const router = useRouter();
 onMounted(async () => {
   const response = await fetch('http://localhost:8000/api/categories')
   expenseCategories.value = (await response.json()).data
 })
+
+async function handleLogout() {
+  await logout();
+  localStorage.removeItem('token');
+  router.push({ name: 'login' });
+}
 </script>
 
 <template>
@@ -27,9 +35,9 @@ onMounted(async () => {
         <p class="font-display text-2xl font-bold tracking-tight text-ink">
           Expense Tracker
         </p>
-        <p class="text-sm font-medium text-ink-soft">
+        <button class="text-sm font-medium text-ink-soft cursor-pointer" @click="handleLogout">
           Log out
-        </p>
+        </button>
       </header>
 
       <main class="mt-12">
