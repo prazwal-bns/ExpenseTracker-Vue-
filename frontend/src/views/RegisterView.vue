@@ -2,7 +2,8 @@
 import { RouterLink, useRouter } from 'vue-router'
 import { register } from '../api/auth'
 import { ref } from 'vue'
-
+import { useToast } from 'vue-toast-notification'
+const toast = useToast()
 const router = useRouter()
 
 const name = ref('')
@@ -26,6 +27,7 @@ async function handleRegister() {
 
     localStorage.setItem('token', data.token)
     await router.push({ name: 'expense-categories' })
+    toast.success('Account created successfully')
   } catch (err) {
     error.value = err.message
   } finally {

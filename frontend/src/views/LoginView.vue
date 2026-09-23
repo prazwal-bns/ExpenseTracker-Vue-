@@ -2,7 +2,8 @@
 import { RouterLink, useRouter } from 'vue-router'
 import { login } from '../api/auth'
 import { ref } from 'vue'
-
+import { useToast } from 'vue-toast-notification'
+const toast = useToast()
 const router = useRouter()
 
 const email = ref('')
@@ -18,6 +19,7 @@ async function handleLogin() {
     const data = await login(email.value, password.value)
     localStorage.setItem('token', data.token)
     await router.push({ name: 'expense-categories' })
+    toast.success('Logged in successfully')
   } catch (err) {
     error.value = err.message
   } finally {
