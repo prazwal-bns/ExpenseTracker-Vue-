@@ -11,9 +11,14 @@ onMounted(async () => {
 })
 
 async function handleLogout() {
-  await logout();
-  localStorage.removeItem('token');
-  router.push({ name: 'login' });
+  try {
+    await logout()
+  } catch (err) {
+    console.error('Server logout failed:', err)
+  } finally {
+    localStorage.removeItem('token')
+    router.push({ name: 'login' })
+  }
 }
 </script>
 

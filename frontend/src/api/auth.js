@@ -48,11 +48,13 @@ export async function register(name, email, password, passwordConfirmation) {
 }
 
 export async function logout() {
+    const token = localStorage.getItem('token')
     const response = await fetch(`${API_URL}/logout`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
+            'Authorization': `Bearer ${token}`,
         },
     })
 
@@ -60,5 +62,6 @@ export async function logout() {
         throw new Error('Logout failed')
     }
 
+    if (response.status === 204) return null
     return response.json()
 }
