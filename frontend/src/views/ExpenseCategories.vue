@@ -2,7 +2,7 @@
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { getCategories } from '../api/category'
-import LogOut from '../Components/LogOut.vue';
+import LogOut from '../components/LogOut.vue';
 
 const expenseCategories = ref([])
 const router = useRouter();
