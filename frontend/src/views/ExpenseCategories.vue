@@ -1,11 +1,11 @@
 <script setup>
 import { onMounted, ref } from 'vue'
-import { useRouter } from 'vue-router'
 import { getCategories } from '../api/category'
 import LogOut from '../components/LogOut.vue';
 
 const expenseCategories = ref([])
-const router = useRouter();
+const loading = ref(false)
+const error = ref('')
 
 
   onMounted(() => {
@@ -13,11 +13,16 @@ const router = useRouter();
   })
 
   async function fetchCategories(){
+  loading.value = true
+  error.value = ''
   try{
     expenseCategories.value = await getCategories();
     console.log(expenseCategories.value)
   } catch (err) {
+    error.value = err.message;
     console.error('Failed to fetch categories:', err)
+  } finally {
+    loading.value = false
   }
   
 }
@@ -64,8 +69,17 @@ const router = useRouter();
                 A quick look at how you group spending. Expense tools come next.
               </p>
             </div>
-            <p class="rounded-full bg-leaf/10 px-3 py-1 text-xs font-semibold text-leaf">
+            <p
+              v-if="!loading"
+              class="rounded-full bg-leaf/10 px-3 py-1 text-xs font-semibold text-leaf"
+            >
               {{ expenseCategories.length }} total
+            </p>
+            <p
+              v-else
+              class="rounded-full bg-ink/5 px-3 py-1 text-xs font-semibold text-ink-soft"
+            >
+              Loading…
             </p>
           </div>
         </section>
@@ -80,8 +94,31 @@ const router = useRouter();
             </p>
           </div>
 
+          <div
+            v-if="loading"
+            class="flex flex-col items-center gap-3 rounded-xl border border-ink/8 bg-fog/50 px-5 py-12 text-center"
+          >
+            <span class="size-8 animate-spin rounded-full border-2 border-leaf/20 border-t-leaf" />
+            <p class="text-sm font-medium text-ink">
+              Loading categories…
+            </p>
+            <p class="text-xs text-ink-soft">
+              Fetching your spending groups
+            </p>
+          </div>
+
+          <div
+            v-else-if="error"
+            class="rounded-xl border border-red-200 bg-red-50 px-5 py-8 text-center"
+            role="alert"
+          >
+            <p class="font-display text-lg text-red-800">
+              Something went wrong
+            </p>
+          </div>
+
           <ul
-            v-if="expenseCategories.length"
+            v-else-if="expenseCategories.length"
             class="flex flex-col gap-2.5"
           >
             <li
