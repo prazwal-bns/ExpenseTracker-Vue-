@@ -1,22 +1,12 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { logout } from '../api/auth'
 import { getCategories } from '../api/category'
+import LogOut from '../Components/LogOut.vue';
 
 const expenseCategories = ref([])
 const router = useRouter();
 
-async function handleLogout() {
-  try {
-    await logout()
-  } catch (err) {
-    console.error('Server logout failed:', err)
-  } finally {
-    localStorage.removeItem('token')
-    router.push({ name: 'login' })
-  }
-}
 
   onMounted(() => {
     fetchCategories()
@@ -25,6 +15,7 @@ async function handleLogout() {
   async function fetchCategories(){
   try{
     expenseCategories.value = await getCategories();
+    console.log(expenseCategories.value)
   } catch (err) {
     console.error('Failed to fetch categories:', err)
   }
@@ -46,15 +37,13 @@ async function handleLogout() {
     />
 
     <div class="relative mx-auto max-w-3xl px-6 py-8 sm:px-10">
-      <header class="flex items-center justify-between gap-4">
-        <p class="font-display text-2xl font-bold tracking-tight text-ink">
-          Expense Tracker
-        </p>
-        <button class="text-sm font-medium text-ink-soft cursor-pointer" @click="handleLogout">
-          Log out
-        </button>
-      </header>
 
+      <header class="flex items-center justify-between gap-4">
+      <p class="font-display text-2xl font-bold tracking-tight text-ink">
+          Expense Tracker
+      </p>
+      <LogOut />
+      </header>
       <main class="mt-12">
         <p class="text-sm font-medium tracking-wide text-leaf uppercase">
           Dashboard
