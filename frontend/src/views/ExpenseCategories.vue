@@ -24,8 +24,7 @@ async function handleLogout() {
 
   async function fetchCategories(){
   try{
-    const response = await getCategories()
-    expenseCategories.value = response.data
+    expenseCategories.value = await getCategories();
   } catch (err) {
     console.error('Failed to fetch categories:', err)
   }

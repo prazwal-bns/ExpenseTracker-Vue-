@@ -17,5 +17,5 @@ export async function getCategories(){
     }
 
 
-    return data
+    return data.data
 }
