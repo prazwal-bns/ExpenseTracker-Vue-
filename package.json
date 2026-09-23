@@ -7,8 +7,7 @@
         "dev": "vite",
         "lint": "eslint \"frontend/src/**/*.{js,vue}\"",
         "dev:frontend": "npm --prefix frontend run dev",
-        "dev:all": "concurrently -n laravel,vite,vue -c blue,magenta,green \"php artisan serve\" \"npm run dev\" \"npm run dev:frontend\"",
-        "dev:api": "concurrently -n laravel,vue -c blue,green \"php artisan serve\" \"npm run dev:frontend\""
+        "dev:all": "concurrently -n laravel,vite,vue -c blue,magenta,green \"php artisan serve\" \"npm run dev:frontend\""
     },
     "devDependencies": {
         "@eslint/js": "^10.0.1",
