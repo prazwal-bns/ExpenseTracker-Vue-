@@ -2,13 +2,10 @@
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { logout } from '../api/auth'
+import { getCategories } from '../api/category'
 
 const expenseCategories = ref([])
 const router = useRouter();
-onMounted(async () => {
-  const response = await fetch('http://localhost:8000/api/categories')
-  expenseCategories.value = (await response.json()).data
-})
 
 async function handleLogout() {
   try {
@@ -19,6 +16,20 @@ async function handleLogout() {
     localStorage.removeItem('token')
     router.push({ name: 'login' })
   }
+}
+
+  onMounted(() => {
+    fetchCategories()
+  })
+
+  async function fetchCategories(){
+  try{
+    const response = await getCategories()
+    expenseCategories.value = response.data
+  } catch (err) {
+    console.error('Failed to fetch categories:', err)
+  }
+  
 }
 </script>
 
