@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import LoginView from '../views/LoginView.vue'
 import RegisterView from '../views/RegisterView.vue'
+import DashboardView from '../views/DashboardView.vue'
 import ExpenseCategories from '../views/ExpenseCategories.vue'
 
 const router = createRouter({
@@ -25,6 +26,12 @@ const router = createRouter({
       meta: {guestOnly: true,}
     },
     {
+      path: '/dashboard',
+      name: 'dashboard',
+      component: DashboardView,
+      meta: {requiresAuth: true,}
+    },
+    {
       path: '/expense-categories',
       name: 'expense-categories',
       component: ExpenseCategories,
@@ -41,7 +48,7 @@ router.beforeEach((to) => {
   }
 
   if(to.meta.guestOnly && token) {
-    return {name: 'expense-categories'}
+    return {name: 'dashboard'}
   }
 
   return true;
