@@ -26,7 +26,7 @@ async function handleRegister() {
     )
 
     localStorage.setItem('token', data.token)
-    await router.push({ name: 'expense-categories' })
+    await router.push({ name: 'dashboard' })
     toast.success('Account created successfully')
   } catch (err) {
     error.value = err.message
