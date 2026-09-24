@@ -18,7 +18,7 @@ async function handleLogin() {
   try {
     const data = await login(email.value, password.value)
     localStorage.setItem('token', data.token)
-    await router.push({ name: 'expense-categories' })
+    await router.push({ name: 'dashboard' })
     toast.success('Logged in successfully')
   } catch (err) {
     error.value = err.message
