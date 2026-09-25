@@ -1,3 +1,4 @@
+import { apiFetch } from './client'
 const API_URL = import.meta.env.VITE_API_URL
 
 export async function login(email, password) {
@@ -24,12 +25,10 @@ export async function login(email, password) {
 export async function register(name, email, password, passwordConfirmation) {
     const response = await fetch(`${API_URL}/register`, {
         method: 'POST',
-
         headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
         },
-
         body: JSON.stringify({
             name,
             email,
@@ -48,20 +47,10 @@ export async function register(name, email, password, passwordConfirmation) {
 }
 
 export async function logout() {
-    const token = localStorage.getItem('token')
-    const response = await fetch(`${API_URL}/logout`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Authorization': `Bearer ${token}`,
-        },
-    })
-
-    if (!response.ok) {
-        throw new Error('Logout failed')
+    try{
+        return await apiFetch('/logout', { method: 'POST' })
+    } catch (error) {
+        if (error.message === 'Session expired') return null
+        throw error
     }
-
-    if (response.status === 204) return null
-    return response.json()
 }
