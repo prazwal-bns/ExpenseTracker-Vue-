@@ -41,6 +41,12 @@ const router = createRouter({
 })
 
 router.beforeEach((to) => {
+  const expiresAt = localStorage.getItem('expires_at');
+  if(expiresAt && Date.now() > new Date(expiresAt).getTime()) {
+    localStorage.removeItem('token')
+    localStorage.removeItem('expires_at')
+  }
+  
   const token = localStorage.getItem('token');
 
   if(to.meta.requiresAuth && !token) {
