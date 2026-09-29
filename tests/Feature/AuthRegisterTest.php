@@ -4,6 +4,9 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
 it('registers a user and returns a sanctum token', function () {
+    config(['sanctum.expiration' => 720]);
+    $this->travelTo('2026-01-01 08:00:00');
+
     $response = $this->postJson('/api/register', [
         'name' => 'Taylor Otwell',
         'email' => 'taylor@example.com',
@@ -15,7 +18,8 @@ it('registers a user and returns a sanctum token', function () {
     $response->assertCreated()
         ->assertJsonPath('token_type', 'Bearer')
         ->assertJsonPath('user.email', 'taylor@example.com')
-        ->assertJsonStructure(['token', 'token_type', 'user' => ['id', 'name', 'email']]);
+        ->assertJsonPath('expires_at', '2026-01-01T20:00:00+00:00')
+        ->assertJsonStructure(['token', 'token_type', 'expires_at', 'user' => ['id', 'name', 'email']]);
 
     $this->assertDatabaseHas('users', [
         'email' => 'taylor@example.com',
@@ -26,7 +30,8 @@ it('registers a user and returns a sanctum token', function () {
 
     expect($user)->not->toBeNull()
         ->and(Hash::check('password', $user->password))->toBeTrue()
-        ->and($user->tokens()->count())->toBe(1);
+        ->and($user->tokens()->count())->toBe(1)
+        ->and($user->tokens()->first()->expires_at->toDateTimeString())->toBe('2026-01-01 20:00:00');
 });
 
 it('rejects registration when the email is already taken', function () {
