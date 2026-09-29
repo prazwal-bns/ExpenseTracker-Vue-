@@ -18,6 +18,7 @@ async function handleLogin() {
   try {
     const data = await login(email.value, password.value)
     localStorage.setItem('token', data.token)
+    localStorage.setItem('expires_at', data.expires_at)
     await router.push({ name: 'dashboard' })
     toast.success('Logged in successfully')
   } catch (err) {

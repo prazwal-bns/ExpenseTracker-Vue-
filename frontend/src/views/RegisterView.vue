@@ -26,6 +26,7 @@ async function handleRegister() {
     )
 
     localStorage.setItem('token', data.token)
+    localStorage.setItem('expires_at', data.expires_at)
     await router.push({ name: 'dashboard' })
     toast.success('Account created successfully')
   } catch (err) {

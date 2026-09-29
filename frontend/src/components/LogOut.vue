@@ -13,6 +13,7 @@ async function handleLogout() {
     console.error('Server logout failed:', err)
   } finally {
     localStorage.removeItem('token')
+    localStorage.removeItem('expires_at')
     router.push({ name: 'login' })
   }
 }
