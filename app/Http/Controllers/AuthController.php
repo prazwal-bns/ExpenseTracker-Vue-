@@ -9,7 +9,6 @@ use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
@@ -29,12 +28,9 @@ class AuthController extends Controller
         ]);
 
         $deviceName = $data['device_name'] ?? 'api-token';
-        $token = $user->createToken($deviceName)->plainTextToken;
 
         return response()->json([
-            'token' => $token,
-            'token_type' => 'Bearer',
-            'user' => UserResource::make($user),
+            ...$this->issueToken($user, $deviceName),
         ], 201);
     }
 
@@ -54,12 +50,9 @@ class AuthController extends Controller
         }
 
         $deviceName = $credentials['device_name'] ?? 'api-token';
-        $token = $user->createToken($deviceName)->plainTextToken;
 
         return response()->json([
-            'token' => $token,
-            'token_type' => 'Bearer',
-            'user' => UserResource::make($user),
+            ...$this->issueToken($user, $deviceName),
         ]);
     }
 
@@ -73,5 +66,21 @@ class AuthController extends Controller
         return response()->json([
             'message' => 'Logged out successfully.',
         ]);
+    }
+
+
+    /**
+     * @return array{token: string, token_type: string, expires_at: string}
+     */
+    private function issueToken(User $user, string $deviceName): array
+    {
+        $expiresAt = now()->addMinutes(config('sanctum.expiration'));
+
+        return [
+            'token' => $user->createToken($deviceName, ['*'], $expiresAt)->plainTextToken,
+            'token_type' => 'Bearer',
+            'user' => UserResource::make($user),
+            'expires_at' => $expiresAt->toIso8601String(),
+        ];
     }
 }
