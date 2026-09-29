@@ -21,8 +21,6 @@ class AuthController extends Controller
     {
         $data = $request->validated();
 
-        Log::info($data);
-
         $user = User::query()->create([
             'name' => $data['name'],
             'email' => $data['email'],
