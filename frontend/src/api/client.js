@@ -15,6 +15,7 @@ export async function apiFetch(path, options = {}) {
 
   if (res.status === 401) {
     localStorage.removeItem('token')
+    localStorage.removeItem('expires_at')
     location.assign('/login')
     throw new Error('Session expired')
   }
