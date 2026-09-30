@@ -1,10 +1,12 @@
 <script setup>
 import { RouterLink, useRouter } from 'vue-router'
-import { register } from '../api/auth'
 import { ref } from 'vue'
 import { useToast } from 'vue-toast-notification'
+import { useAuthStore } from '../stores/auth'
+
 const toast = useToast()
 const router = useRouter()
+const auth = useAuthStore()
 
 const name = ref('')
 const email = ref('')
@@ -18,15 +20,7 @@ async function handleRegister() {
   error.value = ''
 
   try {
-    const data = await register(
-      name.value,
-      email.value,
-      password.value,
-      passwordConfirmation.value,
-    )
-
-    localStorage.setItem('token', data.token)
-    localStorage.setItem('expires_at', data.expires_at)
+    await auth.register(name.value, email.value, password.value, passwordConfirmation.value)
     await router.push({ name: 'dashboard' })
     toast.success('Account created successfully')
   } catch (err) {
