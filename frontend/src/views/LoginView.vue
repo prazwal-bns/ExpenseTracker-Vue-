@@ -1,24 +1,24 @@
 <script setup>
-import { RouterLink, useRouter } from 'vue-router'
-import { login } from '../api/auth'
 import { ref } from 'vue'
+import { RouterLink, useRouter } from 'vue-router'
 import { useToast } from 'vue-toast-notification'
-const toast = useToast()
+import { useAuthStore } from '../stores/auth'
+
 const router = useRouter()
+const toast = useToast()
+const auth = useAuthStore()
 
 const email = ref('')
 const password = ref('')
 const error = ref('')
 const loading = ref(false)
 
+
 async function handleLogin() {
   loading.value = true
   error.value = ''
-
   try {
-    const data = await login(email.value, password.value)
-    localStorage.setItem('token', data.token)
-    localStorage.setItem('expires_at', data.expires_at)
+    await auth.login(email.value, password.value)
     await router.push({ name: 'dashboard' })
     toast.success('Logged in successfully')
   } catch (err) {
