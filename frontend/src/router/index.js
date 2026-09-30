@@ -4,6 +4,7 @@ import LoginView from '../views/LoginView.vue'
 import RegisterView from '../views/RegisterView.vue'
 import DashboardView from '../views/DashboardView.vue'
 import ExpenseCategories from '../views/ExpenseCategories.vue'
+import { useAuthStore } from '../stores/auth'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -41,19 +42,17 @@ const router = createRouter({
 })
 
 router.beforeEach((to) => {
-  const expiresAt = localStorage.getItem('expires_at');
-  if(expiresAt && Date.now() > new Date(expiresAt).getTime()) {
-    localStorage.removeItem('token')
-    localStorage.removeItem('expires_at')
-  }
-  
-  const token = localStorage.getItem('token');
+  const auth = useAuthStore()
 
-  if(to.meta.requiresAuth && !token) {
+  if(auth.token && !auth.isAuthenticated) {
+    auth.clearSession()
+  }
+
+  if(to.meta.requiresAuth && !auth.isAuthenticated) {
     return {name: 'login'}
   }
 
-  if(to.meta.guestOnly && token) {
+  if(to.meta.guestOnly && auth.isAuthenticated) {
     return {name: 'dashboard'}
   }
 
