@@ -1,19 +1,18 @@
 <script setup>
 import { useRouter } from 'vue-router'
-import { logout } from '../api/auth'
+import { useAuthStore } from '../stores/auth'
 import { useToast } from 'vue-toast-notification'
+
 const toast = useToast()
 const router = useRouter()
-
+const auth = useAuthStore()
 async function handleLogout() {
   try {
-    await logout()
+    await auth.logout()
     toast.success('Logged out successfully')
   } catch (err) {
     console.error('Server logout failed:', err)
   } finally {
-    localStorage.removeItem('token')
-    localStorage.removeItem('expires_at')
     router.push({ name: 'login' })
   }
 }
