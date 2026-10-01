@@ -2,7 +2,7 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import './main.css'
 import router from './router/index.js'
-import ToastPlugin from 'vue-toast-notification'
+import { ToastPlugin } from 'vue-toast-notification'
 import 'vue-toast-notification/dist/theme-sugar.css'
 import {createPinia } from 'pinia'
 
