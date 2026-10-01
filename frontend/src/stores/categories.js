@@ -25,6 +25,12 @@ export const useCategoryStore = defineStore('categories', () => {
 
     // todo create category
 
+
+    // todo update category
+
+
+    // todo delete category
+
     return {
         expenseCategories,
         loading,
