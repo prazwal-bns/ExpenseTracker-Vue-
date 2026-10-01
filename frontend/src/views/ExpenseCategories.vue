@@ -59,7 +59,7 @@ onMounted(() => categoryStore.fetchCategories())
               </p>
             </div>
             <p
-              v-if="!loading"
+              v-if="!categoryStore.loading"
               class="rounded-full bg-leaf/10 px-3 py-1 text-xs font-semibold text-leaf"
             >
               {{ categoryStore.expenseCategories.length }} total
