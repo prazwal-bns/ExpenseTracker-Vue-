@@ -23,6 +23,8 @@ export const useCategoryStore = defineStore('categories', () => {
         }
     }
 
+    // todo create category
+
     return {
         expenseCategories,
         loading,
