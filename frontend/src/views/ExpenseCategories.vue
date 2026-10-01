@@ -1,32 +1,12 @@
 <script setup>
-import { onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
-import { getCategories } from '../api/category'
 import LogOut from '../components/LogOut.vue';
+import { useCategoryStore } from '../stores/categories'
+import { onMounted } from 'vue';
 
-const expenseCategories = ref([])
-const loading = ref(false)
-const error = ref('')
+const categoryStore = useCategoryStore()
+onMounted(() => categoryStore.fetchCategories())
 
-
-  onMounted(() => {
-    fetchCategories()
-  })
-
-  async function fetchCategories(){
-  loading.value = true
-  error.value = ''
-  try{
-    expenseCategories.value = await getCategories();
-    console.log(expenseCategories.value)
-  } catch (err) {
-    error.value = err.message;
-    console.error('Failed to fetch categories:', err)
-  } finally {
-    loading.value = false
-  }
-  
-}
 </script>
 
 <template>
@@ -82,7 +62,7 @@ const error = ref('')
               v-if="!loading"
               class="rounded-full bg-leaf/10 px-3 py-1 text-xs font-semibold text-leaf"
             >
-              {{ expenseCategories.length }} total
+              {{ categoryStore.expenseCategories.length }} total
             </p>
             <p
               v-else
@@ -104,7 +84,7 @@ const error = ref('')
           </div>
 
           <div
-            v-if="loading"
+            v-if="categoryStore.loading"
             class="flex flex-col items-center gap-3 rounded-xl border border-ink/8 bg-fog/50 px-5 py-12 text-center"
           >
             <span class="size-8 animate-spin rounded-full border-2 border-leaf/20 border-t-leaf" />
@@ -117,7 +97,7 @@ const error = ref('')
           </div>
 
           <div
-            v-else-if="error"
+            v-else-if="categoryStore.error"
             class="rounded-xl border border-red-200 bg-red-50 px-5 py-8 text-center"
             role="alert"
           >
@@ -127,11 +107,11 @@ const error = ref('')
           </div>
 
           <ul
-            v-else-if="expenseCategories.length"
+            v-else-if="categoryStore.expenseCategories.length"
             class="flex flex-col gap-2.5"
           >
             <li
-              v-for="category in expenseCategories"
+              v-for="category in categoryStore.expenseCategories"
               :key="category.id"
               class="group flex items-center gap-4 rounded-xl border border-ink/8 bg-white/90 px-4 py-3.5 transition hover:border-leaf/25 hover:bg-white"
             >
