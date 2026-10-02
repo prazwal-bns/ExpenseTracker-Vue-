@@ -72,15 +72,16 @@ onMounted(() => categoryStore.fetchCategories())
             </p>
           </div>
         </section>
-
         <section class="mt-8 rounded-2xl border border-ink/10 bg-white/70 p-5 shadow-[0_20px_50px_rgb(16_42_36_/_0.08)] backdrop-blur-sm sm:p-7">
           <div class="mb-5 flex items-center justify-between gap-3 border-b border-ink/8 pb-4">
             <h2 class="text-sm font-semibold text-ink">
               Categories
             </h2>
-            <p class="text-xs text-ink-soft">
-              Coming soon: add & edit
-            </p>
+            <div>
+              <form class="bg-leaf px-3 py-1 rounded-full" @submit.prevent="categoryStore.addCategory">
+                  <button type="submit" class="text-white cursor-pointer">Add Category</button>
+              </form>
+            </div>
           </div>
 
           <div
