@@ -7,6 +7,7 @@ import * as categoryApi from '../api/category'
 export const useCategoryStore = defineStore('categories', () => {
     const expenseCategories = ref([])
     const loading = ref(false)
+    const saving = ref(false)
     const error = ref('')
 
     async function fetchCategories(){
@@ -14,26 +15,21 @@ export const useCategoryStore = defineStore('categories', () => {
         error.value = ''
         try{
             expenseCategories.value = await categoryApi.getCategories();
-            console.log(expenseCategories.value)
         } catch (err) {
             error.value = err.message;
-            console.error('Failed to fetch categories:', err)
         } finally {
             loading.value = false
         }
     }
 
     async function addCategory(category){
-        loading.value = true
-        error.value = ''
+        saving.value = true
         try{
-            await categoryApi.createCategory(category)
-            fetchCategories()
-        } catch (err) {
-            error.value = err.message;
-            console.error('Failed to add category:', err)
+            const created = await categoryApi.createCategory(category)
+            expenseCategories.value = [...expenseCategories.value, created]
+                .sort((first, second) => first.name.localeCompare(second.name))
         } finally {
-            loading.value = false
+            saving.value = false
         }
     }
 
@@ -47,6 +43,7 @@ export const useCategoryStore = defineStore('categories', () => {
     return {
         expenseCategories,
         loading,
+        saving,
         error,
         fetchCategories,
         addCategory

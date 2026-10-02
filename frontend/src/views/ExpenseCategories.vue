@@ -125,12 +125,27 @@ onMounted(() => categoryStore.fetchCategories())
 
           <div
             v-else-if="categoryStore.error"
-            class="rounded-xl border border-red-200 bg-red-50 px-5 py-8 text-center"
+            class="flex flex-col items-center rounded-xl border border-red-200 bg-red-50/80 px-5 py-10 text-center"
             role="alert"
           >
-            <p class="font-display text-lg text-red-800">
-              Something went wrong
+            <span class="flex size-12 items-center justify-center rounded-full bg-red-100 text-red-600">
+              <svg class="size-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 9v4m0 4h.01M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z" />
+              </svg>
+            </span>
+            <p class="mt-4 font-display text-lg text-red-800">
+              Couldn't load your categories
             </p>
+            <p class="mt-1.5 max-w-sm text-sm text-red-700/90">
+              {{ categoryStore.error }}
+            </p>
+            <button
+              type="button"
+              class="mt-5 cursor-pointer rounded-xl border border-red-200 bg-white px-4 py-2 text-sm font-semibold text-red-700 transition hover:border-red-300 hover:bg-red-50"
+              @click="categoryStore.fetchCategories()"
+            >
+              Try again
+            </button>
           </div>
 
           <div

@@ -17,17 +17,27 @@ const colorPresets = ['#1F6F54', '#22C55E', '#0EA5E9', '#6366F1', '#E8843A', '#E
 const name = ref('');
 const color = ref('#22C55E');
 const description = ref('');
+const errorMessage = ref('');
+const fieldErrors = ref({});
+
+const inputClass = 'rounded-xl border bg-white px-4 py-3 text-sm text-ink outline-none transition placeholder:text-ink-soft/60 focus:ring-2';
+const validInputClass = 'border-ink/15 focus:border-leaf focus:ring-leaf/20';
+const invalidInputClass = 'border-red-300 focus:border-red-400 focus:ring-red-200';
 
 watch(() => props.open, (isOpen) => {
     if (!isOpen) {
         name.value = '';
         color.value = '#22C55E';
         description.value = '';
-        categoryStore.error = '';
+        errorMessage.value = '';
+        fieldErrors.value = {};
     }
 })
 
 async function handleSubmit() {
+    errorMessage.value = '';
+    fieldErrors.value = {};
+
     try {
         await categoryStore.addCategory({
             name: name.value,
@@ -37,7 +47,10 @@ async function handleSubmit() {
         emit('created');
         emit('close');
     } catch (error) {
-        categoryStore.error = error.message;
+        fieldErrors.value = error.errors ?? {};
+        if (!Object.keys(fieldErrors.value).length) {
+            errorMessage.value = error.message || 'Could not create the category. Please try again.';
+        }
     }
 }
 </script>
@@ -81,8 +94,17 @@ async function handleSubmit() {
                     maxlength="255"
                     autocomplete="off"
                     placeholder="e.g. Groceries"
-                    class="rounded-xl border border-ink/15 bg-white px-4 py-3 text-sm text-ink outline-none transition placeholder:text-ink-soft/60 focus:border-leaf focus:ring-2 focus:ring-leaf/20"
+                    :class="[inputClass, fieldErrors.name ? invalidInputClass : validInputClass]"
+                    :aria-invalid="!!fieldErrors.name"
+                    aria-describedby="category-name-error"
                 >
+                <p
+                    v-if="fieldErrors.name"
+                    id="category-name-error"
+                    class="text-xs font-medium text-red-600"
+                >
+                    {{ fieldErrors.name[0] }}
+                </p>
             </div>
 
             <div class="flex flex-col gap-2">
@@ -112,6 +134,12 @@ async function handleSubmit() {
                         <span class="font-mono uppercase">{{ color }}</span>
                     </label>
                 </div>
+                <p
+                    v-if="fieldErrors.color"
+                    class="text-xs font-medium text-red-600"
+                >
+                    {{ fieldErrors.color[0] }}
+                </p>
             </div>
 
             <div class="flex flex-col gap-2">
@@ -124,20 +152,30 @@ async function handleSubmit() {
                     v-model="description"
                     rows="3"
                     placeholder="What kind of spending goes here?"
-                    class="resize-none rounded-xl border border-ink/15 bg-white px-4 py-3 text-sm text-ink outline-none transition placeholder:text-ink-soft/60 focus:border-leaf focus:ring-2 focus:ring-leaf/20"
+                    class="resize-none"
+                    :class="[inputClass, fieldErrors.description ? invalidInputClass : validInputClass]"
                 />
+                <p
+                    v-if="fieldErrors.description"
+                    class="text-xs font-medium text-red-600"
+                >
+                    {{ fieldErrors.description[0] }}
+                </p>
             </div>
 
-            <p
-                v-if="categoryStore.error"
-                class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+            <div
+                v-if="errorMessage"
+                class="flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
                 role="alert"
             >
-                {{ categoryStore.error }}
-            </p>
+                <svg class="mt-0.5 size-4 shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-8-4a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 10 6Zm0 8a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" clip-rule="evenodd" />
+                </svg>
+                <p>{{ errorMessage }}</p>
+            </div>
 
             <ModalActions
-                :loading="categoryStore.loading"
+                :loading="categoryStore.saving"
                 submit-label="Create category"
                 @cancel="emit('close')"
             />
