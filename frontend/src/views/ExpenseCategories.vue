@@ -2,11 +2,25 @@
 import { RouterLink } from 'vue-router'
 import LogOut from '../components/LogOut.vue';
 import { useCategoryStore } from '../stores/categories'
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import CategoryFormModal  from '../components/CategoryFormModal.vue';
+import PaginationControls from '../components/PaginationControls.vue';
 
 const categoryStore = useCategoryStore()
 const showCategoryModal = ref(false)
+
+const perPage = 5
+const currentPage = ref(1)
+
+const paginatedCategories = computed(() => {
+  const start = (currentPage.value - 1) * perPage
+  return categoryStore.expenseCategories.slice(start, start + perPage)
+})
+
+watch(() => categoryStore.expenseCategories.length, (total) => {
+  const lastPage = Math.max(1, Math.ceil(total / perPage))
+  if (currentPage.value > lastPage) currentPage.value = lastPage
+})
 
 onMounted(() => categoryStore.fetchCategories())
 </script>
@@ -119,44 +133,72 @@ onMounted(() => categoryStore.fetchCategories())
             </p>
           </div>
 
-          <ul
+          <div
             v-else-if="categoryStore.expenseCategories.length"
-            class="flex flex-col gap-2.5"
+            class="flex flex-col gap-5"
           >
-            <li
-              v-for="category in categoryStore.expenseCategories"
-              :key="category.id"
-              class="group flex items-center gap-4 rounded-xl border border-ink/8 bg-white/90 px-4 py-3.5 transition hover:border-leaf/25 hover:bg-white"
-            >
-              <span
-                class="size-10 shrink-0 rounded-xl border border-ink/5 shadow-inner"
-                :style="{ backgroundColor: category.color || '#1f6f54' }"
-              />
-              <div class="min-w-0 flex-1">
-                <p class="truncate text-sm font-semibold text-ink">
-                  {{ category.name }}
-                </p>
-                <p
-                  v-if="category.description"
-                  class="mt-0.5 truncate text-xs text-ink-soft"
-                >
-                  {{ category.description }}
-                </p>
-                <p
-                  v-else
-                  class="mt-0.5 text-xs text-ink-soft/70"
-                >
-                  No description
-                </p>
-              </div>
-              <span
-                v-if="category.expenses_count !== undefined"
-                class="shrink-0 rounded-full bg-fog px-2.5 py-1 text-xs font-medium text-ink-soft"
-              >
-                {{ category.expenses_count }}
-              </span>
-            </li>
-          </ul>
+            <div class="overflow-hidden rounded-xl border border-ink/8 bg-white/90">
+              <table class="w-full table-fixed text-left">
+                <thead class="bg-fog/80">
+                  <tr class="text-[11px] font-semibold tracking-[0.14em] text-ink-soft uppercase">
+                    <th scope="col" class="px-4 py-3 sm:w-2/5">
+                      Category
+                    </th>
+                    <th scope="col" class="hidden px-4 py-3 sm:table-cell">
+                      Description
+                    </th>
+                    <th scope="col" class="w-24 px-4 py-3 text-right">
+                      Expenses
+                    </th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-ink/6">
+                  <tr
+                    v-for="category in paginatedCategories"
+                    :key="category.id"
+                    class="transition hover:bg-mist/60"
+                  >
+                    <td class="px-4 py-3.5">
+                      <div class="flex min-w-0 items-center gap-3">
+                        <span
+                          class="size-9 shrink-0 rounded-xl border border-ink/5 shadow-inner"
+                          :style="{ backgroundColor: category.color || '#1f6f54' }"
+                        />
+                        <div class="min-w-0">
+                          <p class="truncate text-sm font-semibold text-ink">
+                            {{ category.name }}
+                          </p>
+                          <p class="mt-0.5 truncate text-xs text-ink-soft sm:hidden">
+                            {{ category.description || 'No description' }}
+                          </p>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="hidden px-4 py-3.5 sm:table-cell">
+                      <p
+                        class="truncate text-sm"
+                        :class="category.description ? 'text-ink-soft' : 'text-ink-soft/60 italic'"
+                      >
+                        {{ category.description || 'No description' }}
+                      </p>
+                    </td>
+                    <td class="px-4 py-3.5 text-right">
+                      <span class="inline-flex min-w-8 justify-center rounded-full bg-fog px-2.5 py-1 text-xs font-semibold text-ink-soft">
+                        {{ category.expenses_count ?? 0 }}
+                      </span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <PaginationControls
+              v-model:page="currentPage"
+              :total-items="categoryStore.expenseCategories.length"
+              :per-page="perPage"
+              item-label="categories"
+            />
+          </div>
 
           <div
             v-else
