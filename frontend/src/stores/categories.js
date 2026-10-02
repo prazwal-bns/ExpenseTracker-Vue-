@@ -23,7 +23,20 @@ export const useCategoryStore = defineStore('categories', () => {
         }
     }
 
-    // todo create category
+    async function addCategory(category){
+        loading.value = true
+        error.value = ''
+        try{
+            await categoryApi.createCategory(category)
+            fetchCategories()
+        } catch (err) {
+            error.value = err.message;
+            console.error('Failed to add category:', err)
+        } finally {
+            loading.value = false
+        }
+    }
+
 
 
     // todo update category
@@ -35,6 +48,7 @@ export const useCategoryStore = defineStore('categories', () => {
         expenseCategories,
         loading,
         error,
-        fetchCategories
+        fetchCategories,
+        addCategory
     }
 })
