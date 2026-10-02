@@ -2,11 +2,13 @@
 import { RouterLink } from 'vue-router'
 import LogOut from '../components/LogOut.vue';
 import { useCategoryStore } from '../stores/categories'
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
+import CategoryFormModal  from '../components/CategoryFormModal.vue';
 
 const categoryStore = useCategoryStore()
-onMounted(() => categoryStore.fetchCategories())
+const showCategoryModal = ref(false)
 
+onMounted(() => categoryStore.fetchCategories())
 </script>
 
 <template>
@@ -78,9 +80,19 @@ onMounted(() => categoryStore.fetchCategories())
               Categories
             </h2>
             <div>
-              <form class="bg-leaf px-3 py-1 rounded-full" @submit.prevent="categoryStore.addCategory">
-                  <button type="submit" class="text-white cursor-pointer">Add Category</button>
-              </form>
+              <button
+                type="button"
+                class="rounded-full bg-leaf px-3 py-1 text-sm font-medium text-white cursor-pointer"
+                @click="showCategoryModal = true"
+              >
+                Add Category
+              </button>
+
+              <CategoryFormModal
+                :open="showCategoryModal"
+                @close="showCategoryModal = false"
+                @created="showCategoryModal = false"
+              />
             </div>
           </div>
 
