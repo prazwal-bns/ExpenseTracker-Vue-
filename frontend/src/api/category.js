@@ -10,3 +10,10 @@ export async function createCategory(category){
         body: JSON.stringify(category)
     })
 }
+
+export async function updateCategory(id, category){
+    return await apiFetch(`/categories/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify(category)
+    })
+}
