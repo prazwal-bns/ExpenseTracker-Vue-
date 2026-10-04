@@ -47,15 +47,11 @@ export const useCategoryStore = defineStore('categories', () => {
 
     async function deleteCategory(id){
         saving.value = true
-        error.value = ''
         try{
             await categoryApi.deleteCategory(id)
             expenseCategories.value = expenseCategories.value.filter(
                 (category) => category.id !== id
-                )          
-        } catch (err) {
-            error.value = err.message;
-            throw err;
+            )
         } finally {
             saving.value = false
         }
