@@ -6,9 +6,10 @@ import ModalActions from './ModalActions.vue';
 
 const props = defineProps({
     open: { type: Boolean, default: false },
+    editing: { type: Object, default: null },
 })
 
-const emit = defineEmits(['close', 'created'])
+const emit = defineEmits(['close', 'created', 'updated'])
 
 const categoryStore = useCategoryStore();
 
@@ -24,44 +25,64 @@ const inputClass = 'rounded-xl border bg-white px-4 py-3 text-sm text-ink outlin
 const validInputClass = 'border-ink/15 focus:border-leaf focus:ring-leaf/20';
 const invalidInputClass = 'border-red-300 focus:border-red-400 focus:ring-red-200';
 
-watch(() => props.open, (isOpen) => {
-    if (!isOpen) {
-        name.value = '';
-        color.value = '#22C55E';
-        description.value = '';
-        errorMessage.value = '';
-        fieldErrors.value = {};
+watch(
+  () => props.open,
+  (isOpen) => {
+    if (!isOpen) return
+
+    if (props.editing) {
+      name.value = props.editing.name ?? ''
+      color.value = props.editing.color ?? '#22C55E'
+      description.value = props.editing.description ?? ''
+    } else {
+      name.value = ''
+      color.value = '#22C55E'
+      description.value = ''
     }
-})
+    errorMessage.value = ''
+    fieldErrors.value = {}
+  },
+  { immediate: true }
+)
 
 async function handleSubmit() {
     errorMessage.value = '';
     fieldErrors.value = {};
 
-    try {
-        await categoryStore.addCategory({
-            name: name.value,
-            color: color.value,
-            description: description.value,
-        })
-        emit('created');
-        emit('close');
-    } catch (error) {
-        fieldErrors.value = error.errors ?? {};
-        if (!Object.keys(fieldErrors.value).length) {
-            errorMessage.value = error.message || 'Could not create the category. Please try again.';
-        }
+  const payload = {
+    name: name.value,
+    color: color.value,
+    description: description.value,
+  }
+
+  try {
+    if (props.editing) {
+      await categoryStore.updateCategory(props.editing.id, payload)
+      emit('updated')
+    } else {
+      await categoryStore.addCategory(payload)
+      emit('created')
     }
+    emit('close')
+  } catch (error) {
+        fieldErrors.value = error.errors ?? {};
+    if (!Object.keys(fieldErrors.value).length) {
+            errorMessage.value = error.message
+                || `Could not ${props.editing ? 'update' : 'create'} the category. Please try again.`;
+    }
+  }
 }
 </script>
 
 <template>
     <BaseModal
-        :open="open"
-        eyebrow="Categories"
-        title="New category"
-        description="Group similar spending together so it's easier to track."
-        @close="emit('close')"
+    :open="open"
+    eyebrow="Categories"
+    :title="editing ? 'Edit category' : 'New category'"
+    :description="editing
+        ? 'Update the details of this category.'
+        : 'Group similar spending together so it\'s easier to track.'"
+    @close="emit('close')"
     >
         <form class="flex flex-col gap-5" @submit.prevent="handleSubmit">
             <div class="flex items-center gap-4 rounded-2xl border border-ink/8 bg-white/90 px-4 py-3.5">
@@ -176,7 +197,7 @@ async function handleSubmit() {
 
             <ModalActions
                 :loading="categoryStore.saving"
-                submit-label="Create category"
+                :submit-label="editing ? 'Update category' : 'Create category'"
                 @cancel="emit('close')"
             />
         </form>
