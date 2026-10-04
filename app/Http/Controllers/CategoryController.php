@@ -22,7 +22,7 @@ class CategoryController extends Controller
         $categories = $request->user()
             ->categories()
             ->withCount('expenses')
-            ->orderBy('name')
+            ->orderBy('created_at', 'desc')
             ->get();
 
         return CategoryResource::collection($categories);
