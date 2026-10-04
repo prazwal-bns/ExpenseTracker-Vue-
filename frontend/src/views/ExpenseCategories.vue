@@ -6,12 +6,17 @@ import { computed, onMounted, ref, watch } from 'vue';
 import CategoryFormModal  from '../components/CategoryFormModal.vue';
 import PaginationControls from '../components/PaginationControls.vue';
 import ActionButton from '../components/ActionButton.vue';
+import ConfirmModal from '../components/ConfirmModal.vue';
 import { useToast } from 'vue-toast-notification'
 
 const toast = useToast()
 const categoryStore = useCategoryStore()
 const showCategoryModal = ref(false)
 const editingCategory = ref(null)
+const deletingCategory = ref(null)
+const deleteError = ref('')
+
+const deletingHasExpenses = computed(() => (deletingCategory.value?.expenses_count ?? 0) > 0)
 
 const perPage = 5
 const currentPage = ref(1)
@@ -48,6 +53,28 @@ function handleCreated() {
 }
 function handleUpdated() {
   toast.success('Category updated')
+}
+
+function openDeleteModal(category) {
+  deleteError.value = ''
+  deletingCategory.value = category
+}
+
+function closeDeleteModal() {
+  deletingCategory.value = null
+  deleteError.value = ''
+}
+
+async function confirmDelete() {
+  deleteError.value = ''
+
+  try {
+    await categoryStore.deleteCategory(deletingCategory.value.id)
+    toast.success(`${deletingCategory.value.name} deleted`)
+    closeDeleteModal()
+  } catch (error) {
+    deleteError.value = error.message || 'Could not delete the category. Please try again.'
+  }
 }
 </script>
 
@@ -135,6 +162,46 @@ function handleUpdated() {
                 @created="handleCreated"
                 @updated="handleUpdated"
               />
+
+              <ConfirmModal
+                :open="!!deletingCategory"
+                title="Delete category?"
+                description="This permanently removes the category. This can't be undone."
+                confirm-label="Delete category"
+                :loading="categoryStore.saving"
+                :disabled="deletingHasExpenses"
+                :error="deleteError"
+                @close="closeDeleteModal"
+                @confirm="confirmDelete"
+              >
+                <div
+                  v-if="deletingCategory"
+                  class="flex items-center gap-4 rounded-2xl border border-ink/8 bg-white/90 px-4 py-3.5"
+                >
+                  <span
+                    class="size-11 shrink-0 rounded-xl border border-ink/5 shadow-inner"
+                    :style="{ backgroundColor: deletingCategory.color || '#1f6f54' }"
+                  />
+                  <div class="min-w-0 flex-1">
+                    <p class="truncate text-sm font-semibold text-ink">
+                      {{ deletingCategory.name }}
+                    </p>
+                    <p class="mt-0.5 truncate text-xs text-ink-soft">
+                      {{ deletingCategory.description || 'No description' }}
+                    </p>
+                  </div>
+                  <span class="shrink-0 rounded-full bg-fog px-2.5 py-1 text-xs font-semibold text-ink-soft">
+                    {{ deletingCategory.expenses_count ?? 0 }} expenses
+                  </span>
+                </div>
+
+                <p
+                  v-if="deletingHasExpenses"
+                  class="rounded-xl border border-amber/30 bg-amber/10 px-4 py-3 text-sm text-amber-deep"
+                >
+                  This category still has expenses. Move or delete them before deleting the category.
+                </p>
+              </ConfirmModal>
             </div>
           </div>
 
@@ -246,6 +313,7 @@ function handleUpdated() {
                           icon="delete"
                           variant="danger"
                           :aria-label="`Delete ${category.name}`"
+                          @click="openDeleteModal(category)"
                         />
                       </div>
                     </td>
