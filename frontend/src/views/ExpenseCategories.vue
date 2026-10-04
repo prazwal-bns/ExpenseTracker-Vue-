@@ -6,9 +6,12 @@ import { computed, onMounted, ref, watch } from 'vue';
 import CategoryFormModal  from '../components/CategoryFormModal.vue';
 import PaginationControls from '../components/PaginationControls.vue';
 import ActionButton from '../components/ActionButton.vue';
+import { useToast } from 'vue-toast-notification'
 
+const toast = useToast()
 const categoryStore = useCategoryStore()
 const showCategoryModal = ref(false)
+const editingCategory = ref(null)
 
 const perPage = 5
 const currentPage = ref(1)
@@ -24,6 +27,28 @@ watch(() => categoryStore.expenseCategories.length, (total) => {
 })
 
 onMounted(() => categoryStore.fetchCategories())
+
+function openCreateModal() {
+  editingCategory.value = null
+  showCategoryModal.value = true
+}
+
+function openEditModal(category) {
+  editingCategory.value = category
+  showCategoryModal.value = true
+}
+
+function closeModal() {
+  showCategoryModal.value = false
+  editingCategory.value = null
+}
+
+function handleCreated() {
+  toast.success('Category created')
+}
+function handleUpdated() {
+  toast.success('Category updated')
+}
 </script>
 
 <template>
@@ -98,15 +123,17 @@ onMounted(() => categoryStore.fetchCategories())
               <button
                 type="button"
                 class="rounded-full bg-leaf px-3 py-1 text-sm font-medium text-white cursor-pointer"
-                @click="showCategoryModal = true"
+                @click="openCreateModal"
               >
                 Add Category
               </button>
 
               <CategoryFormModal
                 :open="showCategoryModal"
-                @close="showCategoryModal = false"
-                @created="showCategoryModal = false"
+                :editing="editingCategory"
+                @close="closeModal"
+                @created="handleCreated"
+                @updated="handleUpdated"
               />
             </div>
           </div>
@@ -212,6 +239,7 @@ onMounted(() => categoryStore.fetchCategories())
                           label="Edit"
                           icon="edit"
                           :aria-label="`Edit ${category.name}`"
+                          @click="openEditModal(category)"
                         />
                         <ActionButton
                           label="Delete"
