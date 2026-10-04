@@ -29,7 +29,7 @@ const recent = [
       "
     />
 
-    <div class="relative mx-auto flex min-h-dvh max-w-5xl flex-col px-6 py-8 sm:px-10">
+    <div class="relative mx-auto flex min-h-dvh max-w-7xl flex-col px-6 py-8 sm:px-10 lg:px-12">
       <header class="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-ink/10 bg-white/55 px-5 py-4 shadow-[0_10px_30px_rgb(16_42_36_/_0.05)] backdrop-blur-sm">
         <div>
           <p class="font-display text-2xl font-bold tracking-tight text-ink">
