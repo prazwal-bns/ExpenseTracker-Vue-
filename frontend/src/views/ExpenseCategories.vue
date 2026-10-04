@@ -5,6 +5,7 @@ import { useCategoryStore } from '../stores/categories'
 import { computed, onMounted, ref, watch } from 'vue';
 import CategoryFormModal  from '../components/CategoryFormModal.vue';
 import PaginationControls from '../components/PaginationControls.vue';
+import ActionButton from '../components/ActionButton.vue';
 
 const categoryStore = useCategoryStore()
 const showCategoryModal = ref(false)
@@ -39,7 +40,7 @@ onMounted(() => categoryStore.fetchCategories())
       "
     />
 
-    <div class="relative mx-auto flex min-h-dvh max-w-3xl flex-col px-6 py-8 sm:px-10">
+    <div class="relative mx-auto flex min-h-dvh max-w-7xl flex-col px-6 py-8 sm:px-10 lg:px-12">
       <header class="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-ink/10 bg-white/55 px-5 py-4 shadow-[0_10px_30px_rgb(16_42_36_/_0.05)] backdrop-blur-sm">
         <div>
           <p class="font-display text-2xl font-bold tracking-tight text-ink">
@@ -156,14 +157,17 @@ onMounted(() => categoryStore.fetchCategories())
               <table class="w-full table-fixed text-left">
                 <thead class="bg-fog/80">
                   <tr class="text-[11px] font-semibold tracking-[0.14em] text-ink-soft uppercase">
-                    <th scope="col" class="px-4 py-3 sm:w-2/5">
+                    <th scope="col" class="px-4 py-3 sm:w-1/3 lg:w-1/4 lg:px-6">
                       Category
                     </th>
-                    <th scope="col" class="hidden px-4 py-3 sm:table-cell">
+                    <th scope="col" class="hidden px-4 py-3 sm:table-cell lg:px-6">
                       Description
                     </th>
-                    <th scope="col" class="w-24 px-4 py-3 text-right">
+                    <th scope="col" class="w-24 px-4 py-3 text-right lg:w-32 lg:px-6">
                       Expenses
+                    </th>
+                    <th scope="col" class="w-24 px-4 py-3 text-right lg:w-52 lg:px-6">
+                      Actions
                     </th>
                   </tr>
                 </thead>
@@ -173,7 +177,7 @@ onMounted(() => categoryStore.fetchCategories())
                     :key="category.id"
                     class="transition hover:bg-mist/60"
                   >
-                    <td class="px-4 py-3.5">
+                    <td class="px-4 py-3.5 lg:px-6">
                       <div class="flex min-w-0 items-center gap-3">
                         <span
                           class="size-9 shrink-0 rounded-xl border border-ink/5 shadow-inner"
@@ -189,7 +193,7 @@ onMounted(() => categoryStore.fetchCategories())
                         </div>
                       </div>
                     </td>
-                    <td class="hidden px-4 py-3.5 sm:table-cell">
+                    <td class="hidden px-4 py-3.5 sm:table-cell lg:px-6">
                       <p
                         class="truncate text-sm"
                         :class="category.description ? 'text-ink-soft' : 'text-ink-soft/60 italic'"
@@ -197,10 +201,25 @@ onMounted(() => categoryStore.fetchCategories())
                         {{ category.description || 'No description' }}
                       </p>
                     </td>
-                    <td class="px-4 py-3.5 text-right">
+                    <td class="px-4 py-3.5 text-right lg:px-6">
                       <span class="inline-flex min-w-8 justify-center rounded-full bg-fog px-2.5 py-1 text-xs font-semibold text-ink-soft">
                         {{ category.expenses_count ?? 0 }}
                       </span>
+                    </td>
+                    <td class="px-4 py-3.5 lg:px-6">
+                      <div class="flex items-center justify-end gap-1 lg:gap-2">
+                        <ActionButton
+                          label="Edit"
+                          icon="edit"
+                          :aria-label="`Edit ${category.name}`"
+                        />
+                        <ActionButton
+                          label="Delete"
+                          icon="delete"
+                          variant="danger"
+                          :aria-label="`Delete ${category.name}`"
+                        />
+                      </div>
                     </td>
                   </tr>
                 </tbody>
