@@ -26,16 +26,23 @@ export const useCategoryStore = defineStore('categories', () => {
         saving.value = true
         try{
             const created = await categoryApi.createCategory(category)
-            expenseCategories.value = [...expenseCategories.value, created]
-                .sort((first, second) => first.name.localeCompare(second.name))
+            expenseCategories.value = [created, ...expenseCategories.value]
         } finally {
             saving.value = false
         }
     }
 
-
-
-    // todo update category
+    async function updateCategory(id, category){
+        saving.value = true
+        try{
+            const updated = await categoryApi.updateCategory(id, category)
+            expenseCategories.value = expenseCategories.value.map(
+                (existing) => (existing.id === id ? updated : existing)
+            )
+        } finally {
+            saving.value = false
+        }
+    }
 
 
     // todo delete category
@@ -46,6 +53,7 @@ export const useCategoryStore = defineStore('categories', () => {
         saving,
         error,
         fetchCategories,
-        addCategory
+        addCategory,
+        updateCategory
     }
 })
