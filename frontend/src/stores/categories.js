@@ -45,7 +45,21 @@ export const useCategoryStore = defineStore('categories', () => {
     }
 
 
-    // todo delete category
+    async function deleteCategory(id){
+        saving.value = true
+        error.value = ''
+        try{
+            await categoryApi.deleteCategory(id)
+            expenseCategories.value = expenseCategories.value.filter(
+                (category) => category.id !== id
+                )          
+        } catch (err) {
+            error.value = err.message;
+            throw err;
+        } finally {
+            saving.value = false
+        }
+    }
 
     return {
         expenseCategories,
@@ -54,6 +68,7 @@ export const useCategoryStore = defineStore('categories', () => {
         error,
         fetchCategories,
         addCategory,
-        updateCategory
+        updateCategory,
+        deleteCategory
     }
 })
