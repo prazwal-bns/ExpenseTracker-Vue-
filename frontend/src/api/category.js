@@ -17,3 +17,9 @@ export async function updateCategory(id, category){
         body: JSON.stringify(category)
     })
 }
+
+export async function deleteCategory(id){
+    return await apiFetch(`/categories/${id}`, {
+        method: 'DELETE'
+    })
+}
