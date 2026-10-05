@@ -1,17 +1,18 @@
 <script setup>
 import { RouterLink } from 'vue-router'
+import ThemeToggle from '../components/ThemeToggle.vue'
 </script>
 
 <template>
-  <div class="relative min-h-dvh overflow-hidden bg-linear-to-br from-fog via-mist to-[#d5ebe2]">
+  <div class="relative min-h-dvh overflow-hidden bg-linear-to-br from-fog via-mist to-glow">
     <div
       class="animate-wash pointer-events-none absolute inset-0 opacity-40"
       style="
         background-image:
           radial-gradient(circle at 18% 22%, rgb(31 111 84 / 0.18), transparent 34%),
           radial-gradient(circle at 82% 18%, rgb(232 132 58 / 0.16), transparent 28%),
-          linear-gradient(rgb(16 42 36 / 0.04) 1px, transparent 1px),
-          linear-gradient(90deg, rgb(16 42 36 / 0.04) 1px, transparent 1px);
+          linear-gradient(color-mix(in oklab, var(--color-ink) 5%, transparent) 1px, transparent 1px),
+          linear-gradient(90deg, color-mix(in oklab, var(--color-ink) 5%, transparent) 1px, transparent 1px);
         background-size: auto, auto, 48px 48px, 48px 48px;
       "
     />
@@ -22,6 +23,7 @@ import { RouterLink } from 'vue-router'
           Expense Tracker
         </p>
         <nav class="flex items-center gap-3 sm:gap-4">
+          <ThemeToggle />
           <RouterLink
             :to="{ name: 'login' }"
             class="rounded-lg px-3 py-2 text-sm font-medium text-ink-soft transition hover:text-ink"
@@ -58,7 +60,7 @@ import { RouterLink } from 'vue-router'
             </RouterLink>
             <RouterLink
               :to="{ name: 'login' }"
-              class="rounded-xl border border-ink/15 bg-white/50 px-6 py-3 text-sm font-semibold text-ink backdrop-blur-sm transition hover:border-ink/30 hover:bg-white/80"
+              class="rounded-xl border border-ink/15 bg-surface/50 px-6 py-3 text-sm font-semibold text-ink backdrop-blur-sm transition hover:border-ink/30 hover:bg-surface/80"
             >
               Sign in
             </RouterLink>
@@ -66,7 +68,7 @@ import { RouterLink } from 'vue-router'
         </section>
 
         <aside class="animate-drift relative hidden min-h-80 lg:block" aria-hidden="true">
-          <div class="absolute inset-0 rounded-[2rem] bg-linear-to-br from-leaf/90 via-leaf-deep to-ink shadow-[0_30px_80px_rgb(16_42_36_/_0.25)]" />
+          <div class="absolute inset-0 rounded-[2rem] bg-linear-to-br from-leaf/90 via-leaf-deep to-night shadow-[0_30px_80px_rgb(16_42_36_/_0.25)]" />
           <div class="absolute inset-6 rounded-[1.5rem] border border-white/15 bg-white/5 backdrop-blur-[2px]" />
           <div class="absolute inset-x-10 top-14 space-y-5 text-white">
             <div class="flex items-end justify-between gap-4">
@@ -74,7 +76,7 @@ import { RouterLink } from 'vue-router'
                 <p class="text-xs uppercase tracking-[0.2em] text-white/60">This month</p>
                 <p class="mt-2 font-display text-4xl font-semibold">Rs 24,380</p>
               </div>
-              <p class="rounded-full bg-amber/90 px-3 py-1 text-xs font-semibold text-ink">
+              <p class="rounded-full bg-amber/90 px-3 py-1 text-xs font-semibold text-night">
                 −12% vs last
               </p>
             </div>

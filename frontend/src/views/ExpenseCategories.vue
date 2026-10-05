@@ -8,6 +8,7 @@ import CategoryFormModal  from '../components/CategoryFormModal.vue';
 import PaginationControls from '../components/PaginationControls.vue';
 import ActionButton from '../components/ActionButton.vue';
 import ConfirmModal from '../components/ConfirmModal.vue';
+import ThemeToggle from '../components/ThemeToggle.vue';
 import { useToast } from 'vue-toast-notification'
 
 const toast = useToast()
@@ -74,21 +75,21 @@ async function confirmDelete() {
 </script>
 
 <template>
-  <div class="relative min-h-dvh overflow-hidden bg-linear-to-br from-fog via-mist to-[#d5ebe2]">
+  <div class="relative min-h-dvh overflow-hidden bg-linear-to-br from-fog via-mist to-glow">
     <div
       class="pointer-events-none absolute inset-0 opacity-30"
       style="
         background-image:
           radial-gradient(circle at 12% 18%, rgb(31 111 84 / 0.16), transparent 32%),
           radial-gradient(circle at 88% 12%, rgb(232 132 58 / 0.12), transparent 28%),
-          linear-gradient(rgb(16 42 36 / 0.04) 1px, transparent 1px),
-          linear-gradient(90deg, rgb(16 42 36 / 0.04) 1px, transparent 1px);
+          linear-gradient(color-mix(in oklab, var(--color-ink) 5%, transparent) 1px, transparent 1px),
+          linear-gradient(90deg, color-mix(in oklab, var(--color-ink) 5%, transparent) 1px, transparent 1px);
         background-size: auto, auto, 48px 48px, 48px 48px;
       "
     />
 
     <div class="relative mx-auto flex min-h-dvh max-w-7xl flex-col px-6 py-8 sm:px-10 lg:px-12">
-      <header class="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-ink/10 bg-white/55 px-5 py-4 shadow-[0_10px_30px_rgb(16_42_36_/_0.05)] backdrop-blur-sm">
+      <header class="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-ink/10 bg-surface/55 px-5 py-4 shadow-[0_10px_30px_rgb(16_42_36_/_0.05)] backdrop-blur-sm">
         <div>
           <p class="font-display text-2xl font-bold tracking-tight text-ink">
             Expense Tracker
@@ -98,13 +99,14 @@ async function confirmDelete() {
           </p>
         </div>
         <nav class="flex items-center gap-2 sm:gap-3">
+          <ThemeToggle />
           <RouterLink
             :to="{ name: 'dashboard' }"
-            class="rounded-lg px-3 py-2 text-sm font-medium text-ink-soft transition hover:bg-white/80 hover:text-ink"
+            class="rounded-lg px-3 py-2 text-sm font-medium text-ink-soft transition hover:bg-surface/80 hover:text-ink"
           >
             Dashboard
           </RouterLink>
-          <LogOut class="rounded-lg px-3 py-2 transition hover:bg-white/80 hover:text-ink" />
+          <LogOut class="rounded-lg px-3 py-2 transition hover:bg-surface/80 hover:text-ink" />
         </nav>
       </header>
 
@@ -136,7 +138,7 @@ async function confirmDelete() {
             </p>
           </div>
         </section>
-        <section class="mt-8 rounded-2xl border border-ink/10 bg-white/70 p-5 shadow-[0_20px_50px_rgb(16_42_36_/_0.08)] backdrop-blur-sm sm:p-7">
+        <section class="mt-8 rounded-2xl border border-ink/10 bg-surface/70 p-5 shadow-[0_20px_50px_rgb(16_42_36_/_0.08)] backdrop-blur-sm sm:p-7">
           <div class="mb-5 flex items-center justify-between gap-3 border-b border-ink/8 pb-4">
             <h2 class="text-sm font-semibold text-ink">
               Categories
@@ -171,7 +173,7 @@ async function confirmDelete() {
               >
                 <div
                   v-if="deletingCategory"
-                  class="flex items-center gap-4 rounded-2xl border border-ink/8 bg-white/90 px-4 py-3.5"
+                  class="flex items-center gap-4 rounded-2xl border border-ink/8 bg-surface/90 px-4 py-3.5"
                 >
                   <span
                     class="size-11 shrink-0 rounded-xl border border-ink/5 shadow-inner"
@@ -215,23 +217,23 @@ async function confirmDelete() {
 
           <div
             v-else-if="categoryStore.error"
-            class="flex flex-col items-center rounded-xl border border-red-200 bg-red-50/80 px-5 py-10 text-center"
+            class="flex flex-col items-center rounded-xl border border-red-200 bg-red-50/80 px-5 py-10 text-center dark:border-red-500/30 dark:bg-red-500/10"
             role="alert"
           >
-            <span class="flex size-12 items-center justify-center rounded-full bg-red-100 text-red-600">
+            <span class="flex size-12 items-center justify-center rounded-full bg-red-100 text-red-600 dark:bg-red-500/15 dark:text-red-400">
               <svg class="size-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M12 9v4m0 4h.01M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z" />
               </svg>
             </span>
-            <p class="mt-4 font-display text-lg text-red-800">
+            <p class="mt-4 font-display text-lg text-red-800 dark:text-red-200">
               Couldn't load your categories
             </p>
-            <p class="mt-1.5 max-w-sm text-sm text-red-700/90">
+            <p class="mt-1.5 max-w-sm text-sm text-red-700/90 dark:text-red-300/90">
               {{ categoryStore.error }}
             </p>
             <button
               type="button"
-              class="mt-5 cursor-pointer rounded-xl border border-red-200 bg-white px-4 py-2 text-sm font-semibold text-red-700 transition hover:border-red-300 hover:bg-red-50"
+              class="mt-5 cursor-pointer rounded-xl border border-red-200 bg-surface px-4 py-2 text-sm font-semibold text-red-700 transition hover:border-red-300 hover:bg-red-50 dark:border-red-500/30 dark:text-red-300 dark:hover:border-red-500/50 dark:hover:bg-red-500/10"
               @click="categoryStore.fetchCategories()"
             >
               Try again
@@ -242,7 +244,7 @@ async function confirmDelete() {
             v-else-if="categoryStore.expenseCategories.length"
             class="flex flex-col gap-5"
           >
-            <div class="overflow-hidden rounded-xl border border-ink/8 bg-white/90">
+            <div class="overflow-hidden rounded-xl border border-ink/8 bg-surface/90">
               <table class="w-full table-fixed text-left">
                 <thead class="bg-fog/80">
                   <tr class="text-[11px] font-semibold tracking-[0.14em] text-ink-soft uppercase">

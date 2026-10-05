@@ -3,6 +3,7 @@ import { RouterLink, useRouter } from 'vue-router'
 import { ref } from 'vue'
 import { useToast } from 'vue-toast-notification'
 import { useAuthStore } from '../stores/auth'
+import ThemeToggle from '../components/ThemeToggle.vue'
 
 const toast = useToast()
 const router = useRouter()
@@ -32,28 +33,31 @@ async function handleRegister() {
 </script>
 
 <template>
-  <div class="relative flex min-h-dvh items-center justify-center overflow-hidden bg-linear-to-br from-fog via-mist to-[#d5ebe2] px-6 py-12">
+  <div class="relative flex min-h-dvh items-center justify-center overflow-hidden bg-linear-to-br from-fog via-mist to-glow px-6 py-12">
     <div
       class="pointer-events-none absolute inset-0 opacity-40"
       style="
         background-image:
           radial-gradient(circle at 18% 22%, rgb(31 111 84 / 0.18), transparent 34%),
           radial-gradient(circle at 82% 18%, rgb(232 132 58 / 0.16), transparent 28%),
-          linear-gradient(rgb(16 42 36 / 0.04) 1px, transparent 1px),
-          linear-gradient(90deg, rgb(16 42 36 / 0.04) 1px, transparent 1px);
+          linear-gradient(color-mix(in oklab, var(--color-ink) 5%, transparent) 1px, transparent 1px),
+          linear-gradient(90deg, color-mix(in oklab, var(--color-ink) 5%, transparent) 1px, transparent 1px);
         background-size: auto, auto, 48px 48px, 48px 48px;
       "
     />
 
     <div class="relative w-full max-w-md">
-      <RouterLink
-        :to="{ name: 'home' }"
-        class="font-display text-2xl font-bold tracking-tight text-ink transition hover:text-leaf"
-      >
-        Expense Tracker
-      </RouterLink>
+      <div class="flex items-center justify-between gap-4">
+        <RouterLink
+          :to="{ name: 'home' }"
+          class="font-display text-2xl font-bold tracking-tight text-ink transition hover:text-leaf"
+        >
+          Expense Tracker
+        </RouterLink>
+        <ThemeToggle />
+      </div>
 
-      <div class="mt-10 rounded-2xl border border-ink/10 bg-white/70 p-8 shadow-[0_20px_50px_rgb(16_42_36_/_0.08)] backdrop-blur-sm">
+      <div class="mt-10 rounded-2xl border border-ink/10 bg-surface/70 p-8 shadow-[0_20px_50px_rgb(16_42_36_/_0.08)] backdrop-blur-sm">
         <h1 class="font-display text-3xl font-medium text-ink">
           Create account
         </h1>
@@ -73,7 +77,7 @@ async function handleRegister() {
               required
               autocomplete="name"
               placeholder="Alex Rivera"
-              class="rounded-xl border border-ink/15 bg-white px-4 py-3 text-sm text-ink outline-none transition placeholder:text-ink-soft/60 focus:border-leaf focus:ring-2 focus:ring-leaf/20"
+              class="rounded-xl border border-ink/15 bg-surface px-4 py-3 text-sm text-ink outline-none transition placeholder:text-ink-soft/60 focus:border-leaf focus:ring-2 focus:ring-leaf/20"
             >
           </div>
 
@@ -88,7 +92,7 @@ async function handleRegister() {
               required
               autocomplete="email"
               placeholder="alex@example.com"
-              class="rounded-xl border border-ink/15 bg-white px-4 py-3 text-sm text-ink outline-none transition placeholder:text-ink-soft/60 focus:border-leaf focus:ring-2 focus:ring-leaf/20"
+              class="rounded-xl border border-ink/15 bg-surface px-4 py-3 text-sm text-ink outline-none transition placeholder:text-ink-soft/60 focus:border-leaf focus:ring-2 focus:ring-leaf/20"
             >
           </div>
 
@@ -103,7 +107,7 @@ async function handleRegister() {
               required
               autocomplete="new-password"
               placeholder="Enter your password"
-              class="rounded-xl border border-ink/15 bg-white px-4 py-3 text-sm text-ink outline-none transition placeholder:text-ink-soft/60 focus:border-leaf focus:ring-2 focus:ring-leaf/20"
+              class="rounded-xl border border-ink/15 bg-surface px-4 py-3 text-sm text-ink outline-none transition placeholder:text-ink-soft/60 focus:border-leaf focus:ring-2 focus:ring-leaf/20"
             >
           </div>
 
@@ -118,13 +122,13 @@ async function handleRegister() {
               required
               autocomplete="new-password"
               placeholder="Enter your password again"
-              class="rounded-xl border border-ink/15 bg-white px-4 py-3 text-sm text-ink outline-none transition placeholder:text-ink-soft/60 focus:border-leaf focus:ring-2 focus:ring-leaf/20"
+              class="rounded-xl border border-ink/15 bg-surface px-4 py-3 text-sm text-ink outline-none transition placeholder:text-ink-soft/60 focus:border-leaf focus:ring-2 focus:ring-leaf/20"
             >
           </div>
 
           <p
             v-if="error"
-            class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+            class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-300"
             role="alert"
           >
             {{ error }}

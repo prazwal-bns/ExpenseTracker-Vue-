@@ -1,6 +1,7 @@
 <script setup>
 import { RouterLink } from 'vue-router'
 import LogOut from '../components/LogOut.vue'
+import ThemeToggle from '../components/ThemeToggle.vue'
 
 const overview = [
   { label: 'Spent this month', value: 'Rs 24,380', hint: '−12% vs last month', tone: 'leaf' },
@@ -16,21 +17,21 @@ const recent = [
 </script>
 
 <template>
-  <div class="relative min-h-dvh overflow-hidden bg-linear-to-br from-fog via-mist to-[#d5ebe2]">
+  <div class="relative min-h-dvh overflow-hidden bg-linear-to-br from-fog via-mist to-glow">
     <div
       class="pointer-events-none absolute inset-0 opacity-30"
       style="
         background-image:
           radial-gradient(circle at 12% 18%, rgb(31 111 84 / 0.16), transparent 32%),
           radial-gradient(circle at 88% 12%, rgb(232 132 58 / 0.12), transparent 28%),
-          linear-gradient(rgb(16 42 36 / 0.04) 1px, transparent 1px),
-          linear-gradient(90deg, rgb(16 42 36 / 0.04) 1px, transparent 1px);
+          linear-gradient(color-mix(in oklab, var(--color-ink) 5%, transparent) 1px, transparent 1px),
+          linear-gradient(90deg, color-mix(in oklab, var(--color-ink) 5%, transparent) 1px, transparent 1px);
         background-size: auto, auto, 48px 48px, 48px 48px;
       "
     />
 
     <div class="relative mx-auto flex min-h-dvh max-w-7xl flex-col px-6 py-8 sm:px-10 lg:px-12">
-      <header class="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-ink/10 bg-white/55 px-5 py-4 shadow-[0_10px_30px_rgb(16_42_36_/_0.05)] backdrop-blur-sm">
+      <header class="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-ink/10 bg-surface/55 px-5 py-4 shadow-[0_10px_30px_rgb(16_42_36_/_0.05)] backdrop-blur-sm">
         <div>
           <p class="font-display text-2xl font-bold tracking-tight text-ink">
             Expense Tracker
@@ -40,13 +41,14 @@ const recent = [
           </p>
         </div>
         <nav class="flex items-center gap-2 sm:gap-3">
+          <ThemeToggle />
           <RouterLink
             :to="{ name: 'expense-categories' }"
-            class="rounded-lg px-3 py-2 text-sm font-medium text-ink-soft transition hover:bg-white/80 hover:text-ink"
+            class="rounded-lg px-3 py-2 text-sm font-medium text-ink-soft transition hover:bg-surface/80 hover:text-ink"
           >
             Categories
           </RouterLink>
-          <LogOut class="rounded-lg px-3 py-2 transition hover:bg-white/80 hover:text-ink" />
+          <LogOut class="rounded-lg px-3 py-2 transition hover:bg-surface/80 hover:text-ink" />
         </nav>
       </header>
 
@@ -74,7 +76,7 @@ const recent = [
           <article
             v-for="item in overview"
             :key="item.label"
-            class="rounded-2xl border border-ink/10 bg-white/70 p-5 shadow-[0_12px_32px_rgb(16_42_36_/_0.06)] backdrop-blur-sm"
+            class="rounded-2xl border border-ink/10 bg-surface/70 p-5 shadow-[0_12px_32px_rgb(16_42_36_/_0.06)] backdrop-blur-sm"
           >
             <p class="text-xs font-medium tracking-wide text-ink-soft uppercase">
               {{ item.label }}
@@ -96,7 +98,7 @@ const recent = [
         </section>
 
         <section class="mt-6 grid gap-6 lg:grid-cols-[1.4fr_1fr]">
-          <div class="rounded-2xl border border-ink/10 bg-white/70 p-5 shadow-[0_20px_50px_rgb(16_42_36_/_0.08)] backdrop-blur-sm sm:p-7">
+          <div class="rounded-2xl border border-ink/10 bg-surface/70 p-5 shadow-[0_20px_50px_rgb(16_42_36_/_0.08)] backdrop-blur-sm sm:p-7">
             <div class="mb-5 flex items-center justify-between gap-3 border-b border-ink/8 pb-4">
               <h2 class="text-sm font-semibold text-ink">
                 Recent activity
@@ -110,7 +112,7 @@ const recent = [
               <li
                 v-for="row in recent"
                 :key="row.name"
-                class="flex items-center justify-between gap-4 rounded-xl border border-ink/8 bg-white/90 px-4 py-3.5"
+                class="flex items-center justify-between gap-4 rounded-xl border border-ink/8 bg-surface/90 px-4 py-3.5"
               >
                 <div class="min-w-0">
                   <p class="truncate text-sm font-semibold text-ink">
@@ -148,7 +150,7 @@ const recent = [
               </p>
             </RouterLink>
 
-            <div class="rounded-2xl border border-dashed border-ink/15 bg-white/50 px-5 py-6 backdrop-blur-sm">
+            <div class="rounded-2xl border border-dashed border-ink/15 bg-surface/50 px-5 py-6 backdrop-blur-sm">
               <p class="text-sm font-semibold text-ink">
                 Expenses
               </p>
