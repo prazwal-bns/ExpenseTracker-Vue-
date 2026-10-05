@@ -3,15 +3,16 @@ import { computed } from 'vue'
 
 const props = defineProps({
     totalItems: { type: Number, required: true },
-    perPage: { type: Number, default: 5 },
     itemLabel: { type: String, default: 'items' },
+    perPageOptions: { type: Array, default: () => [5, 10, 15, 20] },
 })
 
 const page = defineModel('page', { type: Number, default: 1 })
+const perPage = defineModel('perPage', { type: Number, default: 5 })
 
-const totalPages = computed(() => Math.max(1, Math.ceil(props.totalItems / props.perPage)))
-const rangeStart = computed(() => (props.totalItems === 0 ? 0 : (page.value - 1) * props.perPage + 1))
-const rangeEnd = computed(() => Math.min(page.value * props.perPage, props.totalItems))
+const totalPages = computed(() => Math.max(1, Math.ceil(props.totalItems / perPage.value)))
+const rangeStart = computed(() => (props.totalItems === 0 ? 0 : (page.value - 1) * perPage.value + 1))
+const rangeEnd = computed(() => Math.min(page.value * perPage.value, props.totalItems))
 
 const pageNumbers = computed(() => {
     const total = totalPages.value
@@ -43,13 +44,36 @@ function goTo(number) {
         class="flex flex-col items-center justify-between gap-3 sm:flex-row"
         aria-label="Pagination"
     >
-        <p class="text-xs text-ink-soft">
-            Showing
-            <span class="font-semibold text-ink">{{ rangeStart }}–{{ rangeEnd }}</span>
-            of
-            <span class="font-semibold text-ink">{{ totalItems }}</span>
-            {{ itemLabel }}
-        </p>
+        <div class="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
+            <label class="flex items-center gap-2 text-xs text-ink-soft">
+                Rows per page
+                <span class="relative">
+                    <select
+                        v-model.number="perPage"
+                        class="cursor-pointer appearance-none rounded-lg border border-ink/10 bg-white py-1.5 pr-7 pl-2.5 text-xs font-semibold text-ink transition hover:border-ink/20 focus:border-leaf focus:ring-2 focus:ring-leaf/20 focus:outline-none"
+                    >
+                        <option
+                            v-for="option in perPageOptions"
+                            :key="option"
+                            :value="option"
+                        >
+                            {{ option }}
+                        </option>
+                    </select>
+                    <svg class="pointer-events-none absolute top-1/2 right-2 size-3 -translate-y-1/2 text-ink-soft" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M5 7.5l5 5 5-5" />
+                    </svg>
+                </span>
+            </label>
+
+            <p class="text-xs text-ink-soft">
+                Showing
+                <span class="font-semibold text-ink">{{ rangeStart }}–{{ rangeEnd }}</span>
+                of
+                <span class="font-semibold text-ink">{{ totalItems }}</span>
+                {{ itemLabel }}
+            </p>
+        </div>
 
         <div
             v-if="totalPages > 1"
