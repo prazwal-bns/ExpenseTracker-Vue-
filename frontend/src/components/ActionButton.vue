@@ -26,7 +26,7 @@ const iconPaths = {
 
 const variantClasses = {
     default: 'hover:bg-leaf/10 hover:text-leaf lg:hover:border-leaf/30',
-    danger: 'hover:bg-red-50 hover:text-red-600 lg:hover:border-red-200',
+    danger: 'hover:bg-red-50 hover:text-red-600 lg:hover:border-red-200 dark:hover:bg-red-500/10 dark:hover:text-red-400 dark:lg:hover:border-red-500/30',
 }
 
 const iconPath = computed(() => iconPaths[props.icon] ?? '')
@@ -35,7 +35,7 @@ const iconPath = computed(() => iconPaths[props.icon] ?? '')
 <template>
     <button
         type="button"
-        class="inline-flex cursor-pointer items-center gap-1.5 rounded-lg p-2 text-sm font-medium text-ink-soft transition disabled:cursor-not-allowed disabled:opacity-50 lg:border lg:border-ink/10 lg:bg-white lg:px-3 lg:py-1.5"
+        class="inline-flex cursor-pointer items-center gap-1.5 rounded-lg p-2 text-sm font-medium text-ink-soft transition disabled:cursor-not-allowed disabled:opacity-50 lg:border lg:border-ink/10 lg:bg-surface lg:px-3 lg:py-1.5"
         :class="variantClasses[variant]"
         :aria-label="ariaLabel || label"
         :title="label"

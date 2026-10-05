@@ -11,7 +11,7 @@ const emit = defineEmits(['cancel'])
     <div class="mt-2 flex flex-col-reverse gap-2 border-t border-ink/8 pt-5 sm:flex-row sm:justify-end">
         <button
             type="button"
-            class="cursor-pointer rounded-xl border border-ink/15 bg-white px-5 py-2.5 text-sm font-semibold text-ink-soft transition hover:border-ink/30 hover:text-ink"
+            class="cursor-pointer rounded-xl border border-ink/15 bg-surface px-5 py-2.5 text-sm font-semibold text-ink-soft transition hover:border-ink/30 hover:text-ink"
             @click="emit('cancel')"
         >
             {{ cancelLabel }}

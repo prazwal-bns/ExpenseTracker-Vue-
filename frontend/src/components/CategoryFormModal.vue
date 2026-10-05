@@ -21,9 +21,9 @@ const description = ref('');
 const errorMessage = ref('');
 const fieldErrors = ref({});
 
-const inputClass = 'rounded-xl border bg-white px-4 py-3 text-sm text-ink outline-none transition placeholder:text-ink-soft/60 focus:ring-2';
+const inputClass = 'rounded-xl border bg-surface px-4 py-3 text-sm text-ink outline-none transition placeholder:text-ink-soft/60 focus:ring-2';
 const validInputClass = 'border-ink/15 focus:border-leaf focus:ring-leaf/20';
-const invalidInputClass = 'border-red-300 focus:border-red-400 focus:ring-red-200';
+const invalidInputClass = 'border-red-300 focus:border-red-400 focus:ring-red-200 dark:border-red-500/50 dark:focus:ring-red-500/30';
 
 watch(
   () => props.open,
@@ -85,7 +85,7 @@ async function handleSubmit() {
     @close="emit('close')"
     >
         <form class="flex flex-col gap-5" @submit.prevent="handleSubmit">
-            <div class="flex items-center gap-4 rounded-2xl border border-ink/8 bg-white/90 px-4 py-3.5">
+            <div class="flex items-center gap-4 rounded-2xl border border-ink/8 bg-surface/90 px-4 py-3.5">
                 <span
                     class="size-11 shrink-0 rounded-xl border border-ink/5 shadow-inner transition-colors"
                     :style="{ backgroundColor: color }"
@@ -122,7 +122,7 @@ async function handleSubmit() {
                 <p
                     v-if="fieldErrors.name"
                     id="category-name-error"
-                    class="text-xs font-medium text-red-600"
+                    class="text-xs font-medium text-red-600 dark:text-red-400"
                 >
                     {{ fieldErrors.name[0] }}
                 </p>
@@ -135,7 +135,7 @@ async function handleSubmit() {
                         v-for="preset in colorPresets"
                         :key="preset"
                         type="button"
-                        class="size-8 cursor-pointer rounded-full border-2 border-white shadow-sm ring-offset-2 ring-offset-fog transition hover:scale-110"
+                        class="size-8 cursor-pointer rounded-full border-2 border-surface shadow-sm ring-offset-2 ring-offset-fog transition hover:scale-110"
                         :class="color.toUpperCase() === preset ? 'ring-2 ring-ink' : ''"
                         :style="{ backgroundColor: preset }"
                         :aria-label="`Use color ${preset}`"
@@ -144,7 +144,7 @@ async function handleSubmit() {
 
                     <label
                         for="category-color"
-                        class="ml-1 flex cursor-pointer items-center gap-2 rounded-full border border-ink/15 bg-white py-1 pr-3 pl-1 text-xs font-medium text-ink-soft transition hover:border-ink/30"
+                        class="ml-1 flex cursor-pointer items-center gap-2 rounded-full border border-ink/15 bg-surface py-1 pr-3 pl-1 text-xs font-medium text-ink-soft transition hover:border-ink/30"
                     >
                         <input
                             id="category-color"
@@ -157,7 +157,7 @@ async function handleSubmit() {
                 </div>
                 <p
                     v-if="fieldErrors.color"
-                    class="text-xs font-medium text-red-600"
+                    class="text-xs font-medium text-red-600 dark:text-red-400"
                 >
                     {{ fieldErrors.color[0] }}
                 </p>
@@ -178,7 +178,7 @@ async function handleSubmit() {
                 />
                 <p
                     v-if="fieldErrors.description"
-                    class="text-xs font-medium text-red-600"
+                    class="text-xs font-medium text-red-600 dark:text-red-400"
                 >
                     {{ fieldErrors.description[0] }}
                 </p>
@@ -186,7 +186,7 @@ async function handleSubmit() {
 
             <div
                 v-if="errorMessage"
-                class="flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+                class="flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-300"
                 role="alert"
             >
                 <svg class="mt-0.5 size-4 shrink-0" viewBox="0 0 20 20" fill="currentColor">

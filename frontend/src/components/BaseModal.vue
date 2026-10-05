@@ -29,7 +29,7 @@ onUnmounted(() => document.removeEventListener('keydown', handleEscape));
         >
             <div
                 v-if="open"
-                class="fixed inset-0 z-50 flex items-center justify-center bg-ink/40 px-4 py-8 backdrop-blur-sm"
+                class="fixed inset-0 z-50 flex items-center justify-center bg-night/40 px-4 dark:bg-black/60 py-8 backdrop-blur-sm"
                 @click.self="emit('close')"
             >
                 <div
@@ -65,7 +65,7 @@ onUnmounted(() => document.removeEventListener('keydown', handleEscape));
 
                         <button
                             type="button"
-                            class="-mr-2 -mt-1 shrink-0 cursor-pointer rounded-xl p-2 text-ink-soft transition hover:bg-white hover:text-ink"
+                            class="-mr-2 -mt-1 shrink-0 cursor-pointer rounded-xl p-2 text-ink-soft transition hover:bg-surface hover:text-ink"
                             aria-label="Close"
                             @click="emit('close')"
                         >

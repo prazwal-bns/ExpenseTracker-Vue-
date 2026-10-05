@@ -50,7 +50,7 @@ function goTo(number) {
                 <span class="relative">
                     <select
                         v-model.number="perPage"
-                        class="cursor-pointer appearance-none rounded-lg border border-ink/10 bg-white py-1.5 pr-7 pl-2.5 text-xs font-semibold text-ink transition hover:border-ink/20 focus:border-leaf focus:ring-2 focus:ring-leaf/20 focus:outline-none"
+                        class="cursor-pointer appearance-none rounded-lg border border-ink/10 bg-surface py-1.5 pr-7 pl-2.5 text-xs font-semibold text-ink transition hover:border-ink/20 focus:border-leaf focus:ring-2 focus:ring-leaf/20 focus:outline-none"
                     >
                         <option
                             v-for="option in perPageOptions"
@@ -81,7 +81,7 @@ function goTo(number) {
         >
             <button
                 type="button"
-                class="flex size-9 cursor-pointer items-center justify-center rounded-lg text-ink-soft transition hover:bg-white hover:text-ink disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent"
+                class="flex size-9 cursor-pointer items-center justify-center rounded-lg text-ink-soft transition hover:bg-surface hover:text-ink disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent"
                 :disabled="page === 1"
                 aria-label="Previous page"
                 @click="goTo(page - 1)"
@@ -102,7 +102,7 @@ function goTo(number) {
                     class="size-9 cursor-pointer rounded-lg text-sm font-semibold transition"
                     :class="number === page
                         ? 'bg-leaf text-white shadow-[0_6px_16px_rgb(31_111_84_/_0.25)]'
-                        : 'text-ink-soft hover:bg-white hover:text-ink'"
+                        : 'text-ink-soft hover:bg-surface hover:text-ink'"
                     :aria-current="number === page ? 'page' : undefined"
                     @click="goTo(number)"
                 >
@@ -112,7 +112,7 @@ function goTo(number) {
 
             <button
                 type="button"
-                class="flex size-9 cursor-pointer items-center justify-center rounded-lg text-ink-soft transition hover:bg-white hover:text-ink disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent"
+                class="flex size-9 cursor-pointer items-center justify-center rounded-lg text-ink-soft transition hover:bg-surface hover:text-ink disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent"
                 :disabled="page === totalPages"
                 aria-label="Next page"
                 @click="goTo(page + 1)"

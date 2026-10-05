@@ -19,7 +19,7 @@ const emit = defineEmits(['close', 'confirm'])
   <BaseModal :open="open" @close="emit('close')">
     <div class="flex flex-col gap-5">
       <div class="flex items-start gap-4">
-        <span class="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-red-50 text-red-600 ring-1 ring-red-100">
+        <span class="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-red-50 text-red-600 ring-1 ring-red-100 dark:bg-red-500/10 dark:text-red-400 dark:ring-red-500/20">
           <svg class="size-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
             <path d="M12 9v4m0 4h.01M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z" />
           </svg>
@@ -41,7 +41,7 @@ const emit = defineEmits(['close', 'confirm'])
 
       <div
         v-if="error"
-        class="flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+        class="flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-300"
         role="alert"
       >
         <svg class="mt-0.5 size-4 shrink-0" viewBox="0 0 20 20" fill="currentColor">
@@ -53,7 +53,7 @@ const emit = defineEmits(['close', 'confirm'])
       <div class="mt-1 flex flex-col-reverse gap-2 border-t border-ink/8 pt-5 sm:flex-row sm:justify-end">
         <button
           type="button"
-          class="cursor-pointer rounded-xl border border-ink/15 bg-white px-5 py-2.5 text-sm font-semibold text-ink-soft transition hover:border-ink/30 hover:text-ink"
+          class="cursor-pointer rounded-xl border border-ink/15 bg-surface px-5 py-2.5 text-sm font-semibold text-ink-soft transition hover:border-ink/30 hover:text-ink"
           @click="emit('close')"
         >
           Cancel
