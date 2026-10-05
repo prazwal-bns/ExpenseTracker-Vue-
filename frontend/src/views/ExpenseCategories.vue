@@ -2,7 +2,8 @@
 import { RouterLink } from 'vue-router'
 import LogOut from '../components/LogOut.vue';
 import { useCategoryStore } from '../stores/categories'
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref } from 'vue';
+import { usePagination } from '../composables/usePagination';
 import CategoryFormModal  from '../components/CategoryFormModal.vue';
 import PaginationControls from '../components/PaginationControls.vue';
 import ActionButton from '../components/ActionButton.vue';
@@ -18,18 +19,12 @@ const deleteError = ref('')
 
 const deletingHasExpenses = computed(() => (deletingCategory.value?.expenses_count ?? 0) > 0)
 
-const perPage = 5
-const currentPage = ref(1)
-
-const paginatedCategories = computed(() => {
-  const start = (currentPage.value - 1) * perPage
-  return categoryStore.expenseCategories.slice(start, start + perPage)
-})
-
-watch(() => categoryStore.expenseCategories.length, (total) => {
-  const lastPage = Math.max(1, Math.ceil(total / perPage))
-  if (currentPage.value > lastPage) currentPage.value = lastPage
-})
+const {
+  currentPage,
+  perPage,
+  totalItems: totalCategories,
+  paginatedItems: paginatedCategories,
+} = usePagination(() => categoryStore.expenseCategories)
 
 onMounted(() => categoryStore.fetchCategories())
 
@@ -324,8 +319,8 @@ async function confirmDelete() {
 
             <PaginationControls
               v-model:page="currentPage"
-              :total-items="categoryStore.expenseCategories.length"
-              :per-page="perPage"
+              v-model:per-page="perPage"
+              :total-items="totalCategories"
               item-label="categories"
             />
           </div>
