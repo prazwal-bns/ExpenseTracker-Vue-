@@ -5,9 +5,11 @@ import router from './router/index.js'
 import { ToastPlugin } from 'vue-toast-notification'
 import 'vue-toast-notification/dist/theme-sugar.css'
 import {createPinia } from 'pinia'
+import { useThemeStore } from './stores/theme'
 
 const app = createApp(App)
 app.use(createPinia())
+useThemeStore()
 app.use(router)
 app.use(ToastPlugin, {
     position: 'top-right',

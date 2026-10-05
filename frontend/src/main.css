@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --font-display: "Fraunces", ui-serif, Georgia, serif;
   --font-sans: "Sora", ui-sans-serif, system-ui, sans-serif;
@@ -10,6 +12,9 @@
   --color-leaf-deep: #0f4a38;
   --color-mist: #e7f3ee;
   --color-fog: #f4faf7;
+  --color-glow: #d5ebe2;
+  --color-surface: #ffffff;
+  --color-night: #102a24;
   --color-amber: #e8843a;
   --color-amber-deep: #c96824;
 }
@@ -17,6 +22,22 @@
 @layer base {
   html {
     @apply antialiased;
+    color-scheme: light;
+  }
+
+  html.dark {
+    color-scheme: dark;
+
+    --color-ink: #e3f1eb;
+    --color-ink-soft: #9db8ae;
+    --color-leaf: #2e9a72;
+    --color-leaf-deep: #217a5a;
+    --color-mist: #13281f;
+    --color-fog: #0b1814;
+    --color-glow: #16352b;
+    --color-surface: #11231d;
+    --color-amber: #ee9450;
+    --color-amber-deep: #f5b07c;
   }
 
   body {
