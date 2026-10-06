@@ -106,6 +106,12 @@ async function confirmDelete() {
           >
             Dashboard
           </RouterLink>
+          <RouterLink
+            :to="{ name: 'expenses' }"
+            class="rounded-lg px-3 py-2 text-sm font-medium text-ink-soft transition hover:bg-surface/80 hover:text-ink"
+          >
+            Expenses
+          </RouterLink>
           <LogOut class="rounded-lg px-3 py-2 transition hover:bg-surface/80 hover:text-ink" />
         </nav>
       </header>
