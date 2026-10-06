@@ -97,3 +97,50 @@
 .animate-wash {
   animation: wash 1.2s ease-out both;
 }
+
+.v-toast.v-toast--top,
+.v-toast.v-toast--bottom {
+  padding: 1.25rem;
+}
+
+.v-toast .v-toast__item {
+  min-height: 3.5rem;
+  max-width: 24rem;
+  border-radius: 0.875rem;
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-weight: 500;
+  box-shadow: 0 18px 40px rgb(16 42 36 / 0.22);
+}
+
+.v-toast .v-toast__item .v-toast__text {
+  padding: 1rem 1.25rem 1rem 0.75rem;
+}
+
+.v-toast .v-toast__item .v-toast__icon {
+  width: 1.25rem;
+  min-width: 1.25rem;
+  height: 1.25rem;
+  background-size: contain;
+}
+
+.v-toast .v-toast__item--success {
+  background-color: var(--color-leaf);
+}
+
+.v-toast .v-toast__item--error {
+  background-color: #dc2626;
+}
+
+.v-toast .v-toast__item--info {
+  background-color: #0284c7;
+}
+
+.v-toast .v-toast__item--warning {
+  background-color: var(--color-amber);
+  color: var(--color-night);
+}
+
+.v-toast .v-toast__item--default {
+  background-color: var(--color-night);
+}
