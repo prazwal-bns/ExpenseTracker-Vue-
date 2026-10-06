@@ -6,7 +6,13 @@ const props = defineProps({
     title: { type: String, default: '' },
     eyebrow: { type: String, default: '' },
     description: { type: String, default: '' },
+    size: { type: String, default: 'md', validator: (value) => ['md', 'lg'].includes(value) },
 })
+
+const sizeClasses = {
+    md: 'max-w-lg',
+    lg: 'max-w-2xl',
+}
 
 const emit = defineEmits(['close']);
 
@@ -33,13 +39,12 @@ onUnmounted(() => document.removeEventListener('keydown', handleEscape));
                 @click.self="emit('close')"
             >
                 <div
-                    class="relative w-full max-w-lg overflow-hidden rounded-3xl border border-ink/10 bg-fog shadow-[0_30px_80px_rgb(16_42_36_/_0.25)]"
+                    class="relative w-full overflow-hidden rounded-3xl border border-ink/10 bg-fog shadow-[0_30px_80px_rgb(16_42_36_/_0.25)]"
+                    :class="sizeClasses[size]"
                     role="dialog"
                     aria-modal="true"
                     :aria-label="title"
                 >
-                    <div class="h-1.5 bg-linear-to-r from-leaf via-leaf-deep to-amber" />
-
                     <div class="flex items-start justify-between gap-4 px-6 pt-6 sm:px-8 sm:pt-7">
                         <div>
                             <p
