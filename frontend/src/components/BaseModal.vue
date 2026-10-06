@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, onUnmounted } from 'vue';
+import { onMounted, onUnmounted, watch } from 'vue';
 
 const props = defineProps({
     open: { type: Boolean, default: false },
@@ -20,8 +20,17 @@ function handleEscape(event) {
     if (event.key === 'Escape' && props.open) emit('close');
 }
 
+function lockBodyScroll(locked) {
+    document.body.style.overflow = locked ? 'hidden' : '';
+}
+
+watch(() => props.open, lockBodyScroll, { immediate: true });
+
 onMounted(() => document.addEventListener('keydown', handleEscape));
-onUnmounted(() => document.removeEventListener('keydown', handleEscape));
+onUnmounted(() => {
+    document.removeEventListener('keydown', handleEscape);
+    if (props.open) lockBodyScroll(false);
+});
 
 </script>
 
@@ -35,11 +44,11 @@ onUnmounted(() => document.removeEventListener('keydown', handleEscape));
         >
             <div
                 v-if="open"
-                class="fixed inset-0 z-50 flex items-center justify-center bg-night/40 px-4 dark:bg-black/60 py-8 backdrop-blur-sm"
+                class="fixed inset-0 z-50 flex flex-col items-center overflow-y-auto overscroll-contain bg-night/40 px-4 py-8 backdrop-blur-sm dark:bg-black/60"
                 @click.self="emit('close')"
             >
                 <div
-                    class="relative w-full overflow-hidden rounded-3xl border border-ink/10 bg-fog shadow-[0_30px_80px_rgb(16_42_36_/_0.25)]"
+                    class="relative my-auto w-full shrink-0 overflow-hidden rounded-3xl border border-ink/10 bg-fog shadow-[0_30px_80px_rgb(16_42_36_/_0.25)]"
                     :class="sizeClasses[size]"
                     role="dialog"
                     aria-modal="true"
