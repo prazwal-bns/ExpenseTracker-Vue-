@@ -1,6 +1,5 @@
 <script setup>
-import { RouterLink } from 'vue-router'
-import LogOut from '../components/LogOut.vue';
+import AppNavbar from '../components/AppNavbar.vue';
 import { useCategoryStore } from '../stores/categories'
 import { computed, onMounted, ref } from 'vue';
 import { usePagination } from '../composables/usePagination';
@@ -8,7 +7,6 @@ import CategoryFormModal  from '../components/CategoryFormModal.vue';
 import PaginationControls from '../components/PaginationControls.vue';
 import ActionButton from '../components/ActionButton.vue';
 import ConfirmModal from '../components/ConfirmModal.vue';
-import ThemeToggle from '../components/ThemeToggle.vue';
 import { useAppToast } from '../composables/useAppToast'
 
 const toast = useAppToast()
@@ -89,32 +87,7 @@ async function confirmDelete() {
     />
 
     <div class="relative mx-auto flex min-h-dvh max-w-7xl flex-col px-6 py-8 sm:px-10 lg:px-12">
-      <header class="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-ink/10 bg-surface/55 px-5 py-4 shadow-[0_10px_30px_rgb(16_42_36_/_0.05)] backdrop-blur-sm">
-        <div>
-          <p class="font-display text-2xl font-bold tracking-tight text-ink">
-            Expense Tracker
-          </p>
-          <p class="mt-0.5 text-xs text-ink-soft">
-            Signed in
-          </p>
-        </div>
-        <nav class="flex items-center gap-2 sm:gap-3">
-          <ThemeToggle />
-          <RouterLink
-            :to="{ name: 'dashboard' }"
-            class="rounded-lg px-3 py-2 text-sm font-medium text-ink-soft transition hover:bg-surface/80 hover:text-ink"
-          >
-            Dashboard
-          </RouterLink>
-          <RouterLink
-            :to="{ name: 'expenses' }"
-            class="rounded-lg px-3 py-2 text-sm font-medium text-ink-soft transition hover:bg-surface/80 hover:text-ink"
-          >
-            Expenses
-          </RouterLink>
-          <LogOut class="rounded-lg px-3 py-2 transition hover:bg-surface/80 hover:text-ink" />
-        </nav>
-      </header>
+      <AppNavbar />
 
       <main class="mt-10 flex-1 pb-10">
         <section>

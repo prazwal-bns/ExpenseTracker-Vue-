@@ -19,7 +19,7 @@ async function handleLogout() {
 </script>
 
 <template>
-    <button class="text-sm font-medium text-ink-soft cursor-pointer" @click="handleLogout">
-        Log out
+    <button type="button" class="text-sm font-medium text-ink-soft cursor-pointer" @click="handleLogout">
+        <slot>Log out</slot>
     </button>
 </template>
