@@ -1,11 +1,11 @@
 <script setup>
 import { RouterLink, useRouter } from 'vue-router'
 import { ref } from 'vue'
-import { useToast } from 'vue-toast-notification'
+import { useAppToast } from '../composables/useAppToast'
 import { useAuthStore } from '../stores/auth'
 import ThemeToggle from '../components/ThemeToggle.vue'
 
-const toast = useToast()
+const toast = useAppToast()
 const router = useRouter()
 const auth = useAuthStore()
 

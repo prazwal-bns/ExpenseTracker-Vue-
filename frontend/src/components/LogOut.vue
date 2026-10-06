@@ -1,9 +1,9 @@
 <script setup>
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
-import { useToast } from 'vue-toast-notification'
+import { useAppToast } from '../composables/useAppToast'
 
-const toast = useToast()
+const toast = useAppToast()
 const router = useRouter()
 const auth = useAuthStore()
 async function handleLogout() {

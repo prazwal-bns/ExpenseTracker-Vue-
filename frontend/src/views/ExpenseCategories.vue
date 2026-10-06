@@ -9,9 +9,9 @@ import PaginationControls from '../components/PaginationControls.vue';
 import ActionButton from '../components/ActionButton.vue';
 import ConfirmModal from '../components/ConfirmModal.vue';
 import ThemeToggle from '../components/ThemeToggle.vue';
-import { useToast } from 'vue-toast-notification'
+import { useAppToast } from '../composables/useAppToast'
 
-const toast = useToast()
+const toast = useAppToast()
 const categoryStore = useCategoryStore()
 const showCategoryModal = ref(false)
 const editingCategory = ref(null)
