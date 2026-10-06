@@ -1,5 +1,5 @@
 <script setup>
-import { watch, ref } from 'vue';
+import { computed, watch, ref } from 'vue';
 import { useCategoryStore } from '../stores/categories';
 import BaseModal from './BaseModal.vue';
 import ModalActions from './ModalActions.vue';
@@ -14,10 +14,34 @@ const emit = defineEmits(['close', 'created', 'updated'])
 const categoryStore = useCategoryStore();
 
 const colorPresets = ['#1F6F54', '#22C55E', '#0EA5E9', '#6366F1', '#E8843A', '#EF4444', '#EC4899', '#A16207'];
+const DEFAULT_COLOR = '#22C55E';
+const HEX_PATTERN = /^#[0-9A-F]{6}$/;
 
 const name = ref('');
-const color = ref('#22C55E');
+const color = ref(DEFAULT_COLOR);
+const hexInput = ref(DEFAULT_COLOR);
 const description = ref('');
+
+const isCustomColor = computed(() => !colorPresets.includes(color.value));
+const isHexInputValid = computed(() => HEX_PATTERN.test(normalizeHex(hexInput.value)));
+
+function normalizeHex(value) {
+    const hex = value.trim().toUpperCase();
+    return hex.startsWith('#') ? hex : `#${hex}`;
+}
+
+function setColor(value) {
+    color.value = normalizeHex(value);
+    hexInput.value = color.value;
+}
+
+function handleHexInput() {
+    if (isHexInputValid.value) color.value = normalizeHex(hexInput.value);
+}
+
+function resetHexInput() {
+    hexInput.value = color.value;
+}
 const errorMessage = ref('');
 const fieldErrors = ref({});
 
@@ -32,11 +56,11 @@ watch(
 
     if (props.editing) {
       name.value = props.editing.name ?? ''
-      color.value = props.editing.color ?? '#22C55E'
+      setColor(props.editing.color ?? DEFAULT_COLOR)
       description.value = props.editing.description ?? ''
     } else {
       name.value = ''
-      color.value = '#22C55E'
+      setColor(DEFAULT_COLOR)
       description.value = ''
     }
     errorMessage.value = ''
@@ -77,6 +101,7 @@ async function handleSubmit() {
 <template>
     <BaseModal
     :open="open"
+    size="lg"
     eyebrow="Categories"
     :title="editing ? 'Edit category' : 'New category'"
     :description="editing
@@ -128,32 +153,92 @@ async function handleSubmit() {
                 </p>
             </div>
 
-            <div class="flex flex-col gap-2">
+            <div class="flex flex-col gap-3">
                 <span class="text-sm font-medium text-ink">Color</span>
-                <div class="flex flex-wrap items-center gap-2">
+
+                <div class="flex flex-wrap items-center gap-2.5" role="radiogroup" aria-label="Category color">
                     <button
                         v-for="preset in colorPresets"
                         :key="preset"
                         type="button"
-                        class="size-8 cursor-pointer rounded-full border-2 border-surface shadow-sm ring-offset-2 ring-offset-fog transition hover:scale-110"
-                        :class="color.toUpperCase() === preset ? 'ring-2 ring-ink' : ''"
+                        role="radio"
+                        class="flex size-9 cursor-pointer items-center justify-center rounded-full shadow-sm ring-offset-2 ring-offset-fog transition hover:scale-110 focus-visible:ring-2 focus-visible:ring-leaf/60 focus-visible:outline-none"
+                        :class="color === preset ? 'scale-105 ring-2 ring-leaf' : ''"
                         :style="{ backgroundColor: preset }"
+                        :aria-checked="color === preset"
                         :aria-label="`Use color ${preset}`"
-                        @click="color = preset"
-                    />
+                        @click="setColor(preset)"
+                    >
+                        <svg
+                            v-if="color === preset"
+                            class="size-4 text-white drop-shadow-[0_1px_1px_rgb(0_0_0_/_0.35)]"
+                            viewBox="0 0 20 20"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2.5"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <path d="M4.5 10.5l3.5 3.5 7.5-8" />
+                        </svg>
+                    </button>
+
+                    <span class="mx-1 h-6 w-px bg-ink/10" aria-hidden="true" />
 
                     <label
-                        for="category-color"
-                        class="ml-1 flex cursor-pointer items-center gap-2 rounded-full border border-ink/15 bg-surface py-1 pr-3 pl-1 text-xs font-medium text-ink-soft transition hover:border-ink/30"
+                        class="relative flex size-9 cursor-pointer items-center justify-center rounded-full shadow-sm ring-offset-2 ring-offset-fog transition hover:scale-110 focus-within:ring-2 focus-within:ring-leaf/60"
+                        :class="isCustomColor ? 'scale-105 ring-2 ring-leaf' : ''"
+                        :style="{
+                            background: isCustomColor
+                                ? color
+                                : 'conic-gradient(#ef4444, #f59e0b, #22c55e, #0ea5e9, #6366f1, #ec4899, #ef4444)',
+                        }"
+                        title="Pick a custom color"
                     >
                         <input
-                            id="category-color"
-                            v-model="color"
                             type="color"
-                            class="size-6 cursor-pointer appearance-none rounded-full border-0 bg-transparent p-0 [&::-webkit-color-swatch]:rounded-full [&::-webkit-color-swatch]:border-0 [&::-webkit-color-swatch-wrapper]:p-0"
+                            :value="color"
+                            class="absolute inset-0 size-full cursor-pointer rounded-full opacity-0"
+                            aria-label="Pick a custom color"
+                            @input="setColor($event.target.value)"
                         >
-                        <span class="font-mono uppercase">{{ color }}</span>
+                        <svg
+                            class="pointer-events-none size-4 text-white drop-shadow-[0_1px_1px_rgb(0_0_0_/_0.35)]"
+                            viewBox="0 0 20 20"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2.5"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <path v-if="isCustomColor" d="M4.5 10.5l3.5 3.5 7.5-8" />
+                            <path v-else d="M10 4.5v11M4.5 10h11" />
+                        </svg>
                     </label>
+                </div>
+
+                <div class="flex flex-wrap items-center gap-3">
+                    <div class="relative w-36">
+                        <span
+                            class="pointer-events-none absolute top-1/2 left-3 size-5 -translate-y-1/2 rounded-md border border-ink/10"
+                            :style="{ backgroundColor: color }"
+                        />
+                        <input
+                            v-model="hexInput"
+                            type="text"
+                            maxlength="7"
+                            spellcheck="false"
+                            autocomplete="off"
+                            aria-label="Hex color code"
+                            class="w-full rounded-xl border bg-surface py-2.5 pr-3 pl-10 font-mono text-sm text-ink uppercase outline-none transition focus:ring-2"
+                            :class="isHexInputValid ? validInputClass : invalidInputClass"
+                            @input="handleHexInput"
+                            @blur="resetHexInput"
+                        >
+                    </div>
+                    <p class="text-xs text-ink-soft">
+                        {{ isHexInputValid ? 'Pick a preset, choose a custom shade, or type a hex code.' : 'Use a 6-digit hex code like #22C55E.' }}
+                    </p>
                 </div>
                 <p
                     v-if="fieldErrors.color"
