@@ -43,6 +43,12 @@ const recent = [
         <nav class="flex items-center gap-2 sm:gap-3">
           <ThemeToggle />
           <RouterLink
+            :to="{ name: 'expenses' }"
+            class="rounded-lg px-3 py-2 text-sm font-medium text-ink-soft transition hover:bg-surface/80 hover:text-ink"
+          >
+            Expenses
+          </RouterLink>
+          <RouterLink
             :to="{ name: 'expense-categories' }"
             class="rounded-lg px-3 py-2 text-sm font-medium text-ink-soft transition hover:bg-surface/80 hover:text-ink"
           >
