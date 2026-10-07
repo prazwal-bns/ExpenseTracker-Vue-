@@ -3,7 +3,9 @@ import { onMounted, ref } from 'vue'
 import AppNavbar from '../components/AppNavbar.vue'
 import ActionButton from '../components/ActionButton.vue'
 import PaginationControls from '../components/PaginationControls.vue'
+import ExpenseFormModal from '../components/ExpenseFormModal.vue'
 import { useExpenseStore } from '../stores/expenses'
+import { useAppToast } from '../composables/useAppToast' 
 
 const summary = [
   { label: 'Spent this month', value: 'Rs 24,380', hint: '−12% vs last month', tone: 'leaf' },
@@ -13,12 +15,34 @@ const summary = [
 
 const currentPage = ref(1)
 const perPage = ref(10)
+const showExpenseModal = ref(false)
+const editingExpense = ref(null)
 
+const toast = useAppToast()
 const expenseStore = useExpenseStore()
 onMounted(async() => {
   await expenseStore.fetchExpenses()
   console.log(expenseStore.expenses.map(e => e.title))
 })
+
+
+function openCreateModal() {
+  editingExpense.value = null
+  showExpenseModal.value = true
+}
+
+function closeModal() {
+  showExpenseModal.value = false
+  editingExpense.value = null
+}
+
+function handleCreatedExpense() {
+  toast.success('Expense created')
+}
+function handleUpdatedExpense() {
+  toast.success('Expense updated')
+}
+
 
 </script>
 
@@ -90,14 +114,20 @@ onMounted(async() => {
               Transactions
             </h2>
             <button
-              type="button"
-              class="inline-flex cursor-pointer items-center gap-1.5 rounded-full bg-leaf px-3.5 py-1.5 text-sm font-medium text-white transition hover:bg-leaf-deep"
-            >
-              <svg class="size-4" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-                <path d="M10 4.5v11M4.5 10h11" />
-              </svg>
-              Add Expense
-            </button>
+                type="button"
+                class="rounded-full bg-leaf px-3 py-1 text-sm font-medium text-white cursor-pointer"
+                @click="openCreateModal"
+              >
+                Add Expense
+              </button>
+
+              <ExpenseFormModal
+                :open="showExpenseModal"
+                :editing="editingExpense"
+                @close="closeModal"
+                @created="handleCreatedExpense"
+                @updated="handleUpdatedExpense"
+              />
           </div>
 
           <div class="flex flex-col gap-5">
