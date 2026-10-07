@@ -19,22 +19,13 @@ const categories = [
   { id: 5, name: 'Health', color: '#EF4444' },
 ]
 
-const expenses = [
-  { id: 1, title: 'Grocery haul', notes: 'Weekly vegetables and fruits', category: categories[0], spent_at: 'Oct 6, 2026', amount: 'Rs 2,450' },
-  { id: 2, title: 'Fuel top-up', notes: null, category: categories[1], spent_at: 'Oct 5, 2026', amount: 'Rs 1,200' },
-  { id: 3, title: 'Streaming', notes: 'Monthly plan', category: categories[2], spent_at: 'Oct 4, 2026', amount: 'Rs 999' },
-  { id: 4, title: 'Pharmacy', notes: 'Vitamins', category: categories[4], spent_at: 'Oct 3, 2026', amount: 'Rs 640' },
-  { id: 5, title: 'Lunch with team', notes: null, category: categories[0], spent_at: 'Oct 2, 2026', amount: 'Rs 1,150' },
-  { id: 6, title: 'October rent', notes: 'Apartment', category: categories[3], spent_at: 'Oct 1, 2026', amount: 'Rs 8,500' },
-  { id: 7, title: 'Bus pass', notes: 'Monthly commuter pass', category: categories[1], spent_at: 'Oct 1, 2026', amount: 'Rs 900' },
-]
-
 const currentPage = ref(1)
 const perPage = ref(10)
 
 const expenseStore = useExpenseStore()
 onMounted(async() => {
   await expenseStore.fetchExpenses()
+  console.log(expenseStore.expenses.map(e => e.title))
 })
 
 </script>
@@ -71,7 +62,7 @@ onMounted(async() => {
               </p>
             </div>
             <p class="rounded-full bg-leaf/10 px-3 py-1 text-xs font-semibold text-leaf">
-              {{ expenses.length }} total
+              {{ expenseStore.expenses.length }} total
             </p>
           </div>
         </section>
@@ -195,7 +186,7 @@ onMounted(async() => {
                 </thead>
                 <tbody class="divide-y divide-ink/6">
                   <tr
-                    v-for="expense in expenses"
+                    v-for="expense in expenseStore.expenses"
                     :key="expense.id"
                     class="transition hover:bg-mist/60"
                   >
@@ -258,7 +249,7 @@ onMounted(async() => {
             <PaginationControls
               v-model:page="currentPage"
               v-model:per-page="perPage"
-              :total-items="expenses.length"
+              :total-items="expenseStore.expenses.length"
               item-label="expenses"
             />
           </div>
