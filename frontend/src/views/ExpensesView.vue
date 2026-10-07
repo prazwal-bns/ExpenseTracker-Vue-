@@ -11,14 +11,6 @@ const summary = [
   { label: 'Largest expense', value: 'Rs 8,500', hint: 'Rent · Oct 1', tone: 'amber' },
 ]
 
-const categories = [
-  { id: 1, name: 'Food', color: '#22C55E' },
-  { id: 2, name: 'Transport', color: '#0EA5E9' },
-  { id: 3, name: 'Subscriptions', color: '#6366F1' },
-  { id: 4, name: 'Rent', color: '#E8843A' },
-  { id: 5, name: 'Health', color: '#EF4444' },
-]
-
 const currentPage = ref(1)
 const perPage = ref(10)
 
@@ -106,60 +98,6 @@ onMounted(async() => {
               </svg>
               Add Expense
             </button>
-          </div>
-
-          <div class="mb-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-[1fr_12rem_11rem_11rem]">
-            <label class="relative">
-              <span class="sr-only">Search expenses</span>
-              <svg class="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-ink-soft" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round">
-                <circle cx="9" cy="9" r="5.5" />
-                <path d="M13.5 13.5 17 17" />
-              </svg>
-              <input
-                type="search"
-                placeholder="Search by title or notes…"
-                class="w-full rounded-xl border border-ink/15 bg-surface py-2.5 pr-4 pl-10 text-sm text-ink outline-none transition placeholder:text-ink-soft/60 focus:border-leaf focus:ring-2 focus:ring-leaf/20"
-              >
-            </label>
-
-            <label class="relative">
-              <span class="sr-only">Filter by category</span>
-              <select class="w-full cursor-pointer appearance-none rounded-xl border border-ink/15 bg-surface py-2.5 pr-9 pl-4 text-sm text-ink outline-none transition focus:border-leaf focus:ring-2 focus:ring-leaf/20">
-                <option value="">All categories</option>
-                <option
-                  v-for="category in categories"
-                  :key="category.id"
-                  :value="category.id"
-                >
-                  {{ category.name }}
-                </option>
-              </select>
-              <svg class="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-ink-soft" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M5 7.5l5 5 5-5" />
-              </svg>
-            </label>
-
-            <label>
-              <span class="sr-only">Filter by month</span>
-              <input
-                type="month"
-                value="2026-10"
-                class="w-full rounded-xl border border-ink/15 bg-surface px-4 py-2.5 text-sm text-ink outline-none transition focus:border-leaf focus:ring-2 focus:ring-leaf/20"
-              >
-            </label>
-
-            <label class="relative">
-              <span class="sr-only">Sort expenses</span>
-              <select class="w-full cursor-pointer appearance-none rounded-xl border border-ink/15 bg-surface py-2.5 pr-9 pl-4 text-sm text-ink outline-none transition focus:border-leaf focus:ring-2 focus:ring-leaf/20">
-                <option value="newest">Newest first</option>
-                <option value="oldest">Oldest first</option>
-                <option value="highest">Highest amount</option>
-                <option value="lowest">Lowest amount</option>
-              </select>
-              <svg class="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 text-ink-soft" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M5 7.5l5 5 5-5" />
-              </svg>
-            </label>
           </div>
 
           <div class="flex flex-col gap-5">
