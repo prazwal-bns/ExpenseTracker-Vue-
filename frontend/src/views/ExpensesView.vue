@@ -1,8 +1,9 @@
 <script setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import AppNavbar from '../components/AppNavbar.vue'
 import ActionButton from '../components/ActionButton.vue'
 import PaginationControls from '../components/PaginationControls.vue'
+import { useExpenseStore } from '../stores/expenses'
 
 const summary = [
   { label: 'Spent this month', value: 'Rs 24,380', hint: '−12% vs last month', tone: 'leaf' },
@@ -30,6 +31,12 @@ const expenses = [
 
 const currentPage = ref(1)
 const perPage = ref(10)
+
+const expenseStore = useExpenseStore()
+onMounted(async() => {
+  await expenseStore.fetchExpenses()
+})
+
 </script>
 
 <template>
