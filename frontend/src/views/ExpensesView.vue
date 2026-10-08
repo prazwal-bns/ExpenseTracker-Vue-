@@ -6,7 +6,8 @@ import PaginationControls from '../components/PaginationControls.vue'
 import ExpenseFormModal from '../components/ExpenseFormModal.vue'
 import ConfirmModal from '../components/ConfirmModal.vue'
 import { useExpenseStore } from '../stores/expenses'
-import { useAppToast } from '../composables/useAppToast' 
+import { useAppToast } from '../composables/useAppToast'
+import { usePagination } from '../composables/usePagination'
 
 const summary = [
   { label: 'Spent this month', value: 'Rs 24,380', hint: '−12% vs last month', tone: 'leaf' },
@@ -14,8 +15,6 @@ const summary = [
   { label: 'Largest expense', value: 'Rs 8,500', hint: 'Rent · Oct 1', tone: 'amber' },
 ]
 
-const currentPage = ref(1)
-const perPage = ref(10)
 const showExpenseModal = ref(false)
 const editingExpense = ref(null)
 const deletingExpense = ref(null)
@@ -23,6 +22,13 @@ const deleteError = ref('')
 
 const toast = useAppToast()
 const expenseStore = useExpenseStore()
+
+const {
+  currentPage,
+  perPage,
+  totalItems: totalExpenses,
+  paginatedItems: paginatedExpenses,
+} = usePagination(() => expenseStore.expenses, { perPage: 10 })
 onMounted(async() => {
   await expenseStore.fetchExpenses()
   console.log(expenseStore.expenses.map(e => e.title))
@@ -216,7 +222,7 @@ async function confirmDelete() {
                 </thead>
                 <tbody class="divide-y divide-ink/6">
                   <tr
-                    v-for="expense in expenseStore.expenses"
+                    v-for="expense in paginatedExpenses"
                     :key="expense.id"
                     class="transition hover:bg-mist/60"
                   >
@@ -281,7 +287,7 @@ async function confirmDelete() {
             <PaginationControls
               v-model:page="currentPage"
               v-model:per-page="perPage"
-              :total-items="expenseStore.expenses.length"
+              :total-items="totalExpenses"
               item-label="expenses"
             />
           </div>
