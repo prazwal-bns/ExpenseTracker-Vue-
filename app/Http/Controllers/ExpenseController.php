@@ -24,6 +24,7 @@ class ExpenseController extends Controller
             ->with('category')
             ->latest('spent_at')
             ->latest('id')
+            ->orderBy('created_at', 'desc')
             ->get();
 
         return ExpenseResource::collection($expenses);
