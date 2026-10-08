@@ -64,6 +64,33 @@ watch(() => props.open, (isOpen) => {
 }, { immediate: true })
 
 async function handleSubmit() {
+    errorMessage.value = ''
+    fieldErrors.value = {}
+
+    const payload = {
+        title: title.value,
+        amount: amount.value,
+        category_id: categoryId.value,
+        spent_at: spentAt.value,
+        notes: notes.value || null,
+    }
+
+    try {
+        if (props.editing) {
+            await expenseStore.updateExpense(props.editing.id, payload)
+            emit('updated')
+        } else {
+            await expenseStore.addExpense(payload)
+            emit('created')
+        }
+        emit('close')
+    } catch (error) {
+        fieldErrors.value = error.errors ?? {}
+        if (!Object.keys(fieldErrors.value).length) {
+            errorMessage.value = error.message
+                || `Could not ${props.editing ? 'update' : 'create'} the expense. Please try again.`
+        }
+    }
 }
 </script>
 
