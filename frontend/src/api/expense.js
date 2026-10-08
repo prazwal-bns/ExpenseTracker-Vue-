@@ -17,3 +17,9 @@ export async function updateExpense(id, expense){
         body: JSON.stringify(expense)
     })
 }
+
+export async function deleteExpense(id){
+    return await apiFetch(`/expenses/${id}`, {
+        method: 'DELETE'
+    })
+}
