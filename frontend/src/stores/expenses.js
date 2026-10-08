@@ -21,7 +21,33 @@ export const useExpenseStore = defineStore('expenses', () => {
         }
     }
 
+    function sortNewestFirst(list){
+        return [...list].sort(
+            (first, second) => second.spent_at.localeCompare(first.spent_at) || second.id - first.id
+        )
+    }
 
+    async function addExpense(expense){
+        saving.value = true
+        try{
+            const created = await expenseApi.createExpense(expense)
+            expenses.value = sortNewestFirst([created, ...expenses.value])
+        } finally {
+            saving.value = false
+        }
+    }
+
+    async function updateExpense(id, expense){
+        saving.value = true
+        try{
+            const updated = await expenseApi.updateExpense(id, expense)
+            expenses.value = sortNewestFirst(
+                expenses.value.map((existing) => (existing.id === id ? updated : existing))
+            )
+        } finally {
+            saving.value = false
+        }
+    }
 
     return {
         expenses,
@@ -29,5 +55,7 @@ export const useExpenseStore = defineStore('expenses', () => {
         saving,
         error,
         fetchExpenses,
+        addExpense,
+        updateExpense,
     }
 })
