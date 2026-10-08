@@ -49,6 +49,16 @@ export const useExpenseStore = defineStore('expenses', () => {
         }
     }
 
+    async function deleteExpense(id){
+        saving.value = true
+        try{
+            await expenseApi.deleteExpense(id)
+            expenses.value = expenses.value.filter((expense) => expense.id !== id)
+        } finally {
+            saving.value = false
+        }
+    }
+
     return {
         expenses,
         loading,
@@ -57,5 +67,6 @@ export const useExpenseStore = defineStore('expenses', () => {
         fetchExpenses,
         addExpense,
         updateExpense,
+        deleteExpense,
     }
 })
