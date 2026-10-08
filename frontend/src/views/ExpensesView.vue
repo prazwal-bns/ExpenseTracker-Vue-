@@ -31,6 +31,11 @@ function openCreateModal() {
   showExpenseModal.value = true
 }
 
+function openEditModal(expense) {
+  editingExpense.value = expense
+  showExpenseModal.value = true
+}
+
 function closeModal() {
   showExpenseModal.value = false
   editingExpense.value = null
@@ -200,6 +205,7 @@ function handleUpdatedExpense() {
                           label="Edit"
                           icon="edit"
                           :aria-label="`Edit ${expense.title}`"
+                          @click="openEditModal(expense)"
                         />
                         <ActionButton
                           label="Delete"
