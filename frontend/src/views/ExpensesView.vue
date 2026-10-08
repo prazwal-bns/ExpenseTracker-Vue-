@@ -4,6 +4,7 @@ import AppNavbar from '../components/AppNavbar.vue'
 import ActionButton from '../components/ActionButton.vue'
 import PaginationControls from '../components/PaginationControls.vue'
 import ExpenseFormModal from '../components/ExpenseFormModal.vue'
+import ConfirmModal from '../components/ConfirmModal.vue'
 import { useExpenseStore } from '../stores/expenses'
 import { useAppToast } from '../composables/useAppToast' 
 
@@ -17,6 +18,8 @@ const currentPage = ref(1)
 const perPage = ref(10)
 const showExpenseModal = ref(false)
 const editingExpense = ref(null)
+const deletingExpense = ref(null)
+const deleteError = ref('')
 
 const toast = useAppToast()
 const expenseStore = useExpenseStore()
@@ -46,6 +49,28 @@ function handleCreatedExpense() {
 }
 function handleUpdatedExpense() {
   toast.success('Expense updated')
+}
+
+function openDeleteModal(expense) {
+  deleteError.value = ''
+  deletingExpense.value = expense
+}
+
+function closeDeleteModal() {
+  deletingExpense.value = null
+  deleteError.value = ''
+}
+
+async function confirmDelete() {
+  deleteError.value = ''
+
+  try {
+    await expenseStore.deleteExpense(deletingExpense.value.id)
+    toast.success(`${deletingExpense.value.title} deleted`)
+    closeDeleteModal()
+  } catch (error) {
+    deleteError.value = error.message || 'Could not delete the expense. Please try again.'
+  }
 }
 
 
@@ -133,6 +158,38 @@ function handleUpdatedExpense() {
                 @created="handleCreatedExpense"
                 @updated="handleUpdatedExpense"
               />
+
+              <ConfirmModal
+                :open="!!deletingExpense"
+                title="Delete expense?"
+                description="This permanently removes the expense from your records. This can't be undone."
+                confirm-label="Delete expense"
+                :loading="expenseStore.saving"
+                :error="deleteError"
+                @close="closeDeleteModal"
+                @confirm="confirmDelete"
+              >
+                <div
+                  v-if="deletingExpense"
+                  class="flex items-center gap-4 rounded-2xl border border-ink/8 bg-surface/90 px-4 py-3.5"
+                >
+                  <span
+                    class="size-11 shrink-0 rounded-xl border border-ink/5 shadow-inner"
+                    :style="{ backgroundColor: deletingExpense.category?.color || '#1f6f54' }"
+                  />
+                  <div class="min-w-0 flex-1">
+                    <p class="truncate text-sm font-semibold text-ink">
+                      {{ deletingExpense.title }}
+                    </p>
+                    <p class="mt-0.5 truncate text-xs text-ink-soft">
+                      {{ deletingExpense.category?.name ?? 'Uncategorized' }} · {{ deletingExpense.spent_at }}
+                    </p>
+                  </div>
+                  <span class="shrink-0 font-display text-lg font-semibold text-ink">
+                    Rs {{ deletingExpense.amount }}
+                  </span>
+                </div>
+              </ConfirmModal>
           </div>
 
           <div class="flex flex-col gap-5">
@@ -212,6 +269,7 @@ function handleUpdatedExpense() {
                           icon="delete"
                           variant="danger"
                           :aria-label="`Delete ${expense.title}`"
+                          @click="openDeleteModal(expense)"
                         />
                       </div>
                     </td>
