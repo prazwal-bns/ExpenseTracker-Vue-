@@ -1,6 +1,7 @@
 <script setup>
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import AppNavbar from '../components/AppNavbar.vue'
+import StatCard from '../components/StatCard.vue'
 import ActionButton from '../components/ActionButton.vue'
 import PaginationControls from '../components/PaginationControls.vue'
 import ExpenseFormModal from '../components/ExpenseFormModal.vue'
@@ -8,12 +9,8 @@ import ConfirmModal from '../components/ConfirmModal.vue'
 import { useExpenseStore } from '../stores/expenses'
 import { useAppToast } from '../composables/useAppToast'
 import { usePagination } from '../composables/usePagination'
-
-const summary = [
-  { label: 'Spent this month', value: 'Rs 24,380', hint: '−12% vs last month', tone: 'leaf' },
-  { label: 'Transactions', value: '47', hint: 'Avg Rs 519 each', tone: 'ink' },
-  { label: 'Largest expense', value: 'Rs 8,500', hint: 'Rent · Oct 1', tone: 'amber' },
-]
+import { useExpenseStats } from '../composables/useExpenseStats'
+import { formatAmount, formatDate } from '../utils/format'
 
 const showExpenseModal = ref(false)
 const editingExpense = ref(null)
@@ -29,6 +26,38 @@ const {
   totalItems: totalExpenses,
   paginatedItems: paginatedExpenses,
 } = usePagination(() => expenseStore.expenses, { perPage: 10 })
+
+const stats = useExpenseStats(() => expenseStore.expenses)
+
+const summary = computed(() => {
+  const change = stats.monthChange.value
+  const largest = stats.largestExpense.value
+
+  return [
+    {
+      label: 'Spent this month',
+      value: formatAmount(stats.spentThisMonth.value),
+      hint: change === null
+        ? 'Nothing spent last month'
+        : `${change > 0 ? '+' : '−'}${Math.abs(change).toFixed(0)}% vs last month`,
+      tone: change > 0 ? 'amber' : 'leaf',
+    },
+    {
+      label: 'Transactions',
+      value: stats.transactionCount.value,
+      hint: stats.transactionCount.value
+        ? `This month · avg ${formatAmount(stats.averageExpense.value)} each`
+        : 'None this month yet',
+      tone: 'ink',
+    },
+    {
+      label: 'Largest expense',
+      value: largest ? formatAmount(largest.amount) : '—',
+      hint: largest ? `${largest.title} · ${formatDate(largest.spent_at)}` : 'No expenses this month',
+      tone: 'amber',
+    },
+  ]
+})
 onMounted(async() => {
   await expenseStore.fetchExpenses()
   console.log(expenseStore.expenses.map(e => e.title))
@@ -120,28 +149,11 @@ async function confirmDelete() {
         </section>
 
         <section class="mt-8 grid gap-4 sm:grid-cols-3">
-          <article
+          <StatCard
             v-for="item in summary"
             :key="item.label"
-            class="rounded-2xl border border-ink/10 bg-surface/70 p-5 shadow-[0_12px_32px_rgb(16_42_36_/_0.06)] backdrop-blur-sm"
-          >
-            <p class="text-xs font-medium tracking-wide text-ink-soft uppercase">
-              {{ item.label }}
-            </p>
-            <p class="mt-3 font-display text-2xl font-semibold text-ink sm:text-3xl">
-              {{ item.value }}
-            </p>
-            <p
-              class="mt-2 text-xs font-medium"
-              :class="{
-                'text-leaf': item.tone === 'leaf',
-                'text-amber-deep': item.tone === 'amber',
-                'text-ink-soft': item.tone === 'ink',
-              }"
-            >
-              {{ item.hint }}
-            </p>
-          </article>
+            v-bind="item"
+          />
         </section>
 
         <section class="mt-6 rounded-2xl border border-ink/10 bg-surface/70 p-5 shadow-[0_20px_50px_rgb(16_42_36_/_0.08)] backdrop-blur-sm sm:p-7">
@@ -188,11 +200,11 @@ async function confirmDelete() {
                       {{ deletingExpense.title }}
                     </p>
                     <p class="mt-0.5 truncate text-xs text-ink-soft">
-                      {{ deletingExpense.category?.name ?? 'Uncategorized' }} · {{ deletingExpense.spent_at }}
+                      {{ deletingExpense.category?.name ?? 'Uncategorized' }} · {{ formatDate(deletingExpense.spent_at) }}
                     </p>
                   </div>
                   <span class="shrink-0 font-display text-lg font-semibold text-ink">
-                    Rs {{ deletingExpense.amount }}
+                    {{ formatAmount(deletingExpense.amount) }}
                   </span>
                 </div>
               </ConfirmModal>
@@ -241,7 +253,7 @@ async function confirmDelete() {
                             :class="expense.notes ? 'text-ink-soft' : 'text-ink-soft/60 italic'"
                           >
                             <span class="md:hidden">{{ expense.category.name }} · </span>
-                            <span class="sm:hidden">{{ expense.spent_at }} · </span>
+                            <span class="sm:hidden">{{ formatDate(expense.spent_at) }} · </span>
                             {{ expense.notes || 'No notes' }}
                           </p>
                         </div>
@@ -257,10 +269,10 @@ async function confirmDelete() {
                       </span>
                     </td>
                     <td class="hidden px-4 py-3.5 text-sm text-ink-soft sm:table-cell lg:px-6">
-                      {{ expense.spent_at }}
+                      {{ formatDate(expense.spent_at) }}
                     </td>
                     <td class="px-4 py-3.5 text-right text-sm font-semibold whitespace-nowrap text-ink lg:px-6">
-                      {{ expense.amount }}
+                      {{ formatAmount(expense.amount) }}
                     </td>
                     <td class="px-4 py-3.5 lg:px-6">
                       <div class="flex items-center justify-end gap-1 lg:gap-2">
