@@ -9,8 +9,8 @@ const router = useRouter()
 const toast = useAppToast()
 const auth = useAuthStore()
 
-const email = ref('')
-const password = ref('')
+const email = ref(import.meta.env.DEV ? 'alex@example.com' : '')
+const password = ref(import.meta.env.DEV ? 'password' : '')
 const error = ref('')
 const loading = ref(false)
 
