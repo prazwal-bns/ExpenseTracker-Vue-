@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ExpenseController;
@@ -21,4 +22,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('expenses', ExpenseController::class);
     Route::apiResource('categories', CategoryController::class);
     Route::apiResource('users', UserController::class);
+
+    Route::middleware('can:manage-users')
+        ->prefix('admin')
+        ->name('admin.')
+        ->group(function () {
+            Route::apiResource('users', AdminUserController::class)->except('show');
+        });
 });
