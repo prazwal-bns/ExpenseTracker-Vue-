@@ -5,6 +5,7 @@ import RegisterView from '../views/RegisterView.vue'
 import DashboardView from '../views/DashboardView.vue'
 import ExpenseCategories from '../views/ExpenseCategories.vue'
 import ExpensesView from '../views/ExpensesView.vue'
+import AdminUsersView from '../views/AdminUsersView.vue'
 import { useAuthStore } from '../stores/auth'
 
 const router = createRouter({
@@ -44,22 +45,64 @@ const router = createRouter({
       name: 'expenses',
       component: ExpensesView,
       meta: {requiresAuth: true,}
+    },
+    {
+      path: '/admin/users',
+      name: 'admin-users',
+      component: AdminUsersView,
+      meta: {requiresAuth: true, requiresAdmin: true,}
     }
   ],
 })
 
-router.beforeEach((to) => {
+// True once the user (and their role) has been re-fetched from the server
+// since the page was loaded, so normal pages don't re-fetch on every click.
+let hasLoadedUserFromServer = false
+
+router.beforeEach(async (to) => {
   const auth = useAuthStore()
 
+  const isProtectedPage = to.meta.requiresAuth
+  const isAdminPage = to.meta.requiresAdmin
+  const isGuestOnlyPage = to.meta.guestOnly
+
+  // A token exists but has expired: throw the old session away.
   if(auth.token && !auth.isAuthenticated) {
     auth.clearSession()
   }
 
-  if(to.meta.requiresAuth && !auth.isAuthenticated) {
+  // Protected pages need a logged-in user.
+  if(isProtectedPage && !auth.isAuthenticated) {
     return {name: 'login'}
   }
 
-  if(to.meta.guestOnly && auth.isAuthenticated) {
+  // The user saved in localStorage may be out of date (e.g. an admin changed
+  // their role). Ask the server for the current user when:
+  //  - nothing is saved yet,
+  //  - this is the first protected page since the page was loaded, or
+  //  - this is an admin page, which must always use the latest role.
+  const needsFreshUser = !auth.user || !hasLoadedUserFromServer || isAdminPage
+
+  if(isProtectedPage && needsFreshUser) {
+    try {
+      // Replaces auth.user, which makes auth.isAdmin recalculate from the new role.
+      await auth.fetchUser()
+      hasLoadedUserFromServer = true
+    } catch {
+      // If we can't confirm the role, don't risk showing an admin page.
+      if(isAdminPage) {
+        return {name: 'dashboard'}
+      }
+    }
+  }
+
+  // The actual role check: only admins may open admin pages.
+  if(isAdminPage && !auth.isAdmin) {
+    return {name: 'dashboard'}
+  }
+
+  // Logged-in users don't need the login/register pages.
+  if(isGuestOnlyPage && auth.isAuthenticated) {
     return {name: 'dashboard'}
   }
 
