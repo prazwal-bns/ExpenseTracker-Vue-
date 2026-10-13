@@ -55,10 +55,6 @@ const router = createRouter({
   ],
 })
 
-// True once the user (and their role) has been re-fetched from the server
-// since the page was loaded, so normal pages don't re-fetch on every click.
-let hasLoadedUserFromServer = false
-
 router.beforeEach(async (to) => {
   const auth = useAuthStore()
 
@@ -76,18 +72,15 @@ router.beforeEach(async (to) => {
     return {name: 'login'}
   }
 
-  // The user saved in localStorage may be out of date (e.g. an admin changed
-  // their role). Ask the server for the current user when:
-  //  - nothing is saved yet,
-  //  - this is the first protected page since the page was loaded, or
+  // The user (and their role) only lives in memory, so ask the server for it when:
+  //  - we don't have it yet (first page after a reload or after another tab logged in), or
   //  - this is an admin page, which must always use the latest role.
-  const needsFreshUser = !auth.user || !hasLoadedUserFromServer || isAdminPage
+  const needsFreshUser = !auth.user || isAdminPage
 
   if(isProtectedPage && needsFreshUser) {
     try {
       // Replaces auth.user, which makes auth.isAdmin recalculate from the new role.
       await auth.fetchUser()
-      hasLoadedUserFromServer = true
     } catch {
       // If we can't confirm the role, don't risk showing an admin page.
       if(isAdminPage) {

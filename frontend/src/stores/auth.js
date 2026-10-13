@@ -2,18 +2,12 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import * as authApi from '../api/auth'
 
-function readStoredUser() {
-    try {
-        return JSON.parse(localStorage.getItem('user')) ?? null
-    } catch {
-        return null
-    }
-}
-
 export const useAuthStore = defineStore('auth', () => {
     const token = ref(localStorage.getItem('token'))
     const expiresAt = ref(localStorage.getItem('expires_at'))
-    const user = ref(readStoredUser())
+    // Kept in memory only (never in localStorage) so the role can't be edited
+    // from devtools' Application tab. It's re-fetched from /api/user on page load.
+    const user = ref(null)
 
     const isExpired = computed(() =>
         !!expiresAt.value && Date.now() >= new Date(expiresAt.value).getTime()
@@ -24,7 +18,6 @@ export const useAuthStore = defineStore('auth', () => {
 
     function setUser(value){
         user.value = value
-        localStorage.setItem('user', JSON.stringify(value))
     }
 
     function setSession(data){
@@ -41,13 +34,15 @@ export const useAuthStore = defineStore('auth', () => {
         user.value = null
         localStorage.removeItem('token')
         localStorage.removeItem('expires_at')
-        localStorage.removeItem('user')
     }
 
     window.addEventListener('storage', (event) => {
-        if (event.key === 'token') token.value = event.newValue
+        if (event.key === 'token') {
+            token.value = event.newValue
+            // Another tab logged in or out, so the user we hold may belong to someone else.
+            user.value = null
+        }
         if (event.key === 'expires_at') expiresAt.value = event.newValue
-        if (event.key === 'user') user.value = readStoredUser()
         if (event.key === null) {
             token.value = null
             expiresAt.value = null
