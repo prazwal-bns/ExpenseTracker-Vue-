@@ -1,10 +1,13 @@
 <script setup>
-import { ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
+import { useAuthStore } from '../stores/auth'
 import LogOut from './LogOut.vue'
 import ThemeToggle from './ThemeToggle.vue'
 
-const links = [
+const auth = useAuthStore()
+
+const baseLinks = [
     {
         name: 'dashboard',
         label: 'Dashboard',
@@ -21,6 +24,14 @@ const links = [
         icon: 'M10.6 2.5H16a1.5 1.5 0 0 1 1.5 1.5v5.4a1.5 1.5 0 0 1-.44 1.06l-6.6 6.6a1.5 1.5 0 0 1-2.12 0l-4.9-4.9a1.5 1.5 0 0 1 0-2.12l6.6-6.6a1.5 1.5 0 0 1 1.06-.44ZM13.75 6.25h.01',
     },
 ]
+
+const adminLink = {
+    name: 'admin-users',
+    label: 'Users',
+    icon: 'M7.5 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM2 17a5.5 5.5 0 0 1 11 0M13 3.2a3 3 0 0 1 0 5.6M15 12.2a5.5 5.5 0 0 1 3 4.8',
+}
+
+const links = computed(() => (auth.isAdmin ? [...baseLinks, adminLink] : baseLinks))
 
 const route = useRoute()
 const isMenuOpen = ref(false)
