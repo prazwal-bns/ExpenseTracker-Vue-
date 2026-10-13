@@ -46,6 +46,10 @@ export async function register(name, email, password, passwordConfirmation) {
     return data
 }
 
+export async function getUser() {
+    return await apiFetch('/user')
+}
+
 export async function logout() {
     try{
         return await apiFetch('/logout', { method: 'POST' })

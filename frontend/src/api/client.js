@@ -21,6 +21,12 @@ export async function apiFetch(path, options = {}) {
     throw new Error('Session expired')
   }
 
+  if (res.status === 403 && path.startsWith('/admin')) {
+    await auth.fetchUser().catch(() => {})
+    location.assign('/dashboard')
+    throw new Error('You no longer have admin access')
+  }
+
   if (res.status === 204) return null
 
   const data = await res.json().catch(() => ({}))
