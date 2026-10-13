@@ -22,11 +22,14 @@ class UserResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'email' => $this->email,
+            'role' => $this->role,
             'email_verified_at' => $this->email_verified_at,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'categories' => CategoryResource::collection($this->whenLoaded('categories')),
             'expenses' => ExpenseResource::collection($this->whenLoaded('expenses')),
+            'categories_count' => $this->whenCounted('categories'),
+            'expenses_count' => $this->whenCounted('expenses'),
         ];
     }
 }
