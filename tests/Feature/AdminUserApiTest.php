@@ -202,7 +202,11 @@ it('ignores a role sent to the self-service profile update', function () {
     $user = User::factory()->create();
 
     $this->actingAs($user)
-        ->putJson("/api/users/{$user->id}", ['role' => 'admin'])
+        ->putJson('/api/profile', [
+            'name' => $user->name,
+            'email' => $user->email,
+            'role' => 'admin',
+        ])
         ->assertOk();
 
     expect($user->fresh()->role)->toBe(UserRole::User);
