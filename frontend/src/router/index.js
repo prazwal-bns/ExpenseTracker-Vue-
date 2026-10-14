@@ -6,6 +6,7 @@ import DashboardView from '../views/DashboardView.vue'
 import ExpenseCategories from '../views/ExpenseCategories.vue'
 import ExpensesView from '../views/ExpensesView.vue'
 import AdminUsersView from '../views/AdminUsersView.vue'
+import ProfileView from '../views/ProfileView.vue'
 import { useAuthStore } from '../stores/auth'
 
 const router = createRouter({
@@ -44,6 +45,12 @@ const router = createRouter({
       path: '/expenses',
       name: 'expenses',
       component: ExpensesView,
+      meta: {requiresAuth: true,}
+    },
+    {
+      path: '/profile',
+      name: 'profile',
+      component: ProfileView,
       meta: {requiresAuth: true,}
     },
     {
