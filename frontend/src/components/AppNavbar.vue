@@ -33,6 +33,16 @@ const adminLink = {
 
 const links = computed(() => (auth.isAdmin ? [...baseLinks, adminLink] : baseLinks))
 
+const userInitials = computed(() =>
+    (auth.user?.name ?? '')
+        .trim()
+        .split(/\s+/)
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((part) => part[0].toUpperCase())
+        .join('')
+)
+
 const route = useRoute()
 const isMenuOpen = ref(false)
 
@@ -87,6 +97,23 @@ watch(() => route.name, () => {
 
                 <span class="hidden h-6 w-px bg-ink/10 md:block" aria-hidden="true" />
 
+                <RouterLink
+                    :to="{ name: 'profile' }"
+                    class="hidden items-center gap-2.5 rounded-xl py-1 pr-3 pl-1 transition hover:bg-fog md:flex"
+                    exact-active-class="bg-fog ring-1 ring-ink/8"
+                    :title="auth.user ? `${auth.user.name} – Profile` : 'Profile'"
+                >
+                    <span class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-linear-to-br from-leaf to-leaf-deep text-xs font-bold text-white">
+                        <template v-if="userInitials">{{ userInitials }}</template>
+                        <svg v-else class="size-4" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round">
+                            <path d="M10 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM4 17a6 6 0 0 1 12 0" />
+                        </svg>
+                    </span>
+                    <span class="hidden max-w-32 truncate text-sm font-medium text-ink lg:inline">
+                        {{ auth.user?.name ?? 'Profile' }}
+                    </span>
+                </RouterLink>
+
                 <LogOut
                     class="hidden items-center gap-2 rounded-xl px-3 py-2 transition hover:bg-red-50 hover:text-red-600 md:flex dark:hover:bg-red-500/10 dark:hover:text-red-400"
                     title="Log out"
@@ -136,6 +163,17 @@ watch(() => route.name, () => {
                         <path :d="link.icon" />
                     </svg>
                     {{ link.label }}
+                </RouterLink>
+
+                <RouterLink
+                    :to="{ name: 'profile' }"
+                    class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-ink-soft transition hover:bg-fog hover:text-ink"
+                    exact-active-class="bg-leaf/10 text-leaf!"
+                >
+                    <svg class="size-4 shrink-0" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round">
+                        <path d="M10 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM4 17a6 6 0 0 1 12 0" />
+                    </svg>
+                    Profile
                 </RouterLink>
 
                 <LogOut class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-left transition hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-500/10 dark:hover:text-red-400">
