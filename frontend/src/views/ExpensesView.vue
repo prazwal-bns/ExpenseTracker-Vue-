@@ -58,10 +58,7 @@ const summary = computed(() => {
     },
   ]
 })
-onMounted(async() => {
-  await expenseStore.fetchExpenses()
-  console.log(expenseStore.expenses.map(e => e.title))
-})
+onMounted(() => expenseStore.fetchExpenses())
 
 
 function openCreateModal() {
