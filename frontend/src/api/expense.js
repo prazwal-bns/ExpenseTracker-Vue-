@@ -1,7 +1,10 @@
 import { apiFetch } from './client'
 
-export async function getExpenses(){
-    return await apiFetch('/expenses')
+export async function getExpenses(etag){
+    return await apiFetch('/expenses', {
+        etag: true,
+        headers: etag ? { 'If-None-Match': etag } : {},
+    })
 }
 
 export async function createExpense(expense){

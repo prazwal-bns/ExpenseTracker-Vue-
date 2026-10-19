@@ -1,7 +1,10 @@
 import { apiFetch } from './client'     
 
-export async function getCategories(){
-    return await apiFetch('/categories')
+export async function getCategories(etag){
+    return await apiFetch('/categories', {
+        etag: true,
+        headers: etag ? { 'If-None-Match': etag } : {},
+    })
 }
 
 export async function createCategory(category){

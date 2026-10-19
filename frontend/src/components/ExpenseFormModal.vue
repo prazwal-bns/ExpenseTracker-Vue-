@@ -44,7 +44,7 @@ const previewDate = computed(() =>
 
 watch(() => props.open, (isOpen) => {
     if (!isOpen) return
-    if (!categoryStore.expenseCategories.length) categoryStore.fetchCategories()
+    if (!categoryStore.loaded) categoryStore.fetchCategories()
 
     if (props.editing) {
         title.value = props.editing.title ?? ''
