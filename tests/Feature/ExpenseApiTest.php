@@ -108,3 +108,37 @@ it('rejects creating an expense with another users category', function () {
     ])->assertUnprocessable()
         ->assertJsonValidationErrors(['category_id']);
 });
+
+it('returns 304 when the expense list has not changed', function () {
+    $user = User::factory()->create();
+    $category = Category::factory()->for($user)->create();
+    Expense::factory()->for($user)->for($category)->create();
+
+    $etag = $this->actingAs($user)
+        ->getJson('/api/expenses')
+        ->assertOk()
+        ->assertHeader('ETag')
+        ->headers->get('ETag');
+
+    $this->actingAs($user)
+        ->withHeaders(['If-None-Match' => $etag])
+        ->getJson('/api/expenses')
+        ->assertStatus(304)
+        ->assertHeader('ETag', $etag);
+});
+
+it('returns the expense list when the previous etag is stale', function () {
+    $user = User::factory()->create();
+    $category = Category::factory()->for($user)->create();
+    Expense::factory()->for($user)->for($category)->create();
+
+    $etag = $this->actingAs($user)->getJson('/api/expenses')->headers->get('ETag');
+
+    Expense::factory()->for($user)->for($category)->create();
+
+    $this->actingAs($user)
+        ->withHeaders(['If-None-Match' => $etag])
+        ->getJson('/api/expenses')
+        ->assertOk()
+        ->assertJsonCount(2, 'data');
+});

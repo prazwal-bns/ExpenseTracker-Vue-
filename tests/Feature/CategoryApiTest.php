@@ -86,3 +86,35 @@ it('rejects deleting a category that still has expenses', function () {
 
     $this->assertDatabaseHas('categories', ['id' => $category->id]);
 });
+
+it('returns 304 when the category list has not changed', function () {
+    $user = User::factory()->create();
+    Category::factory()->for($user)->create();
+
+    $etag = $this->actingAs($user)
+        ->getJson('/api/categories')
+        ->assertOk()
+        ->assertHeader('ETag')
+        ->headers->get('ETag');
+
+    $this->actingAs($user)
+        ->withHeaders(['If-None-Match' => $etag])
+        ->getJson('/api/categories')
+        ->assertStatus(304)
+        ->assertHeader('ETag', $etag);
+});
+
+it('treats the category list as changed when an expense count changes', function () {
+    $user = User::factory()->create();
+    $category = Category::factory()->for($user)->create();
+
+    $etag = $this->actingAs($user)->getJson('/api/categories')->headers->get('ETag');
+
+    Expense::factory()->for($user)->for($category)->create();
+
+    $this->actingAs($user)
+        ->withHeaders(['If-None-Match' => $etag])
+        ->getJson('/api/categories')
+        ->assertOk()
+        ->assertJsonPath('data.0.expenses_count', 1);
+});
