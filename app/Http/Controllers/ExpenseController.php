@@ -6,16 +6,16 @@ use App\Http\Requests\StoreExpenseRequest;
 use App\Http\Requests\UpdateExpenseRequest;
 use App\Http\Resources\ExpenseResource;
 use App\Models\Expense;
+use App\Support\CollectionEtag;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class ExpenseController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request): AnonymousResourceCollection
+    public function index(Request $request): JsonResponse
     {
         $this->authorize('viewAny', Expense::class);
 
@@ -27,7 +27,11 @@ class ExpenseController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return ExpenseResource::collection($expenses);
+        return CollectionEtag::response(
+            $request,
+            $expenses,
+            fn (): JsonResponse => ExpenseResource::collection($expenses)->response(),
+        );
     }
 
     /**

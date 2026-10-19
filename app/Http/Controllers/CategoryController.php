@@ -6,16 +6,16 @@ use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
 use App\Http\Resources\CategoryResource;
 use App\Models\Category;
+use App\Support\CollectionEtag;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class CategoryController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request): AnonymousResourceCollection
+    public function index(Request $request): JsonResponse
     {
         $this->authorize('viewAny', Category::class);
 
@@ -25,7 +25,11 @@ class CategoryController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return CategoryResource::collection($categories);
+        return CollectionEtag::response(
+            $request,
+            $categories,
+            fn (): JsonResponse => CategoryResource::collection($categories)->response(),
+        );
     }
 
     /**
